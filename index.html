@@ -1,0 +1,3146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAI Kelas 6 – Halal, Haram & Puasa</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+// Stub functions — real implementations loaded later in body
+function goHome()          { window._goHome          && window._goHome();          }
+function goTo(id)          { window._goTo            && window._goTo(id);          }
+function slideGoTo(id,dir) { window._slideGoTo       && window._slideGoTo(id,dir); }
+function toggleAcc(el)     { window._toggleAcc       && window._toggleAcc(el);     }
+function mgDragOver(e)     { window._mgDragOver      && window._mgDragOver(e);     }
+function mgDragLeave(e)    { window._mgDragLeave     && window._mgDragLeave(e);    }
+function mgDrop(e,z)       { window._mgDrop          && window._mgDrop(e,z);       }
+function mgCheck()         { window._mgCheck         && window._mgCheck();         }
+function mgReset()         { window._mgReset         && window._mgReset();         }
+function selectAnswer(b,i) { window._selectAnswer    && window._selectAnswer(b,i); }
+function nextQuestion()    { window._nextQuestion    && window._nextQuestion();     }
+function buildQuiz()       { window._buildQuiz       && window._buildQuiz();       }
+function printRapor()      { window._printRapor      && window._printRapor();      }
+</script>
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D080;
+  --emerald: #1A7A4A;
+  --emerald-dark: #0A2816;
+  --emerald-mid: #0F4D2E;
+  --emerald-light: #2DB370;
+  --cream: #FDF6E3;
+  --brown: #5C3A1E;
+  --red: #C0392B;
+  --red-light: #FADADD;
+  --white: #FFFFFF;
+  --shadow: 0 8px 32px rgba(10,40,22,0.25);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--emerald-dark);
+  color: #2d2d2d;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== STARS CANVAS ===== */
+#stars-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ===== BADGE POPUP ===== */
+#badge-popup {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, #1A5C38, #0A2816);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 16px 20px;
+  z-index: 8000;
+  display: none;
+  animation: popIn 0.4s cubic-bezier(.17,.67,.35,1.3);
+  max-width: 260px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5) translateY(40px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.bp-icon { font-size: 2.2rem; text-align: center; display: block; margin-bottom: 6px; }
+.bp-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); font-weight: 800; text-align: center; }
+.bp-name  { font-size: 1rem; font-weight: 900; color: white; text-align: center; margin: 4px 0; }
+.bp-desc  { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; }
+
+/* ===== POINTS BAR ===== */
+#points-bar {
+  position: fixed;
+  top: 0;
+  left: 0; right: 0;
+  z-index: 500;
+  background: rgba(5,18,8,0.97);
+  backdrop-filter: blur(10px);
+  border-bottom: 1.5px solid rgba(201,168,76,0.4);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pb-brand {
+  font-family: 'Amiri', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pb-brand span { color: var(--emerald-light); }
+
+.pb-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.pb-pts {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--gold-light);
+}
+
+.pb-bar-wrap {
+  width: 120px;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pb-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--emerald-light), var(--gold));
+  border-radius: 999px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.pb-badges {
+  display: flex;
+  gap: 4px;
+  font-size: 1.1rem;
+}
+
+/* ===== MAIN WRAP ===== */
+#main-wrap {
+  position: relative;
+  z-index: 1;
+  padding-top: 48px;
+}
+
+/* ===== SECTION / PAGE SYSTEM ===== */
+.section { display: none; }
+.section.active { display: block; animation: fadeUp 0.45s ease; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ===== HOME ===== */
+.home-hero {
+  min-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+  position: relative;
+  background: radial-gradient(ellipse at 50% 30%, rgba(26,122,74,0.15) 0%, transparent 70%);
+}
+
+.home-moon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: moonGlow 3s ease-in-out infinite alternate;
+  display: block;
+}
+
+.home-arabic {
+  font-family: 'Amiri', serif;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  color: var(--gold);
+  text-shadow: 0 2px 24px rgba(201,168,76,0.5);
+  margin-bottom: 8px;
+}
+
+.home-bismillah-sub {
+  font-size: 0.85rem;
+  color: rgba(240,208,128,0.6);
+  font-style: italic;
+  margin-bottom: 28px;
+}
+
+.home-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: white;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.home-title em { color: var(--gold); font-style: normal; }
+
+.home-desc {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  max-width: 500px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+.home-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  max-width: 780px;
+  width: 100%;
+}
+
+.home-menu-item {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(201,168,76,0.25);
+  border-radius: 20px;
+  padding: 28px 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.home-menu-item:hover {
+  background: rgba(201,168,76,0.12);
+  border-color: var(--gold);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+
+.home-menu-item .hm-icon { font-size: 2.4rem; display: block; margin-bottom: 10px; }
+.home-menu-item .hm-title { font-size: 0.95rem; font-weight: 800; color: var(--gold-light); margin-bottom: 6px; }
+.home-menu-item .hm-desc { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+/* ===== CHAPTER HERO ===== */
+.chap-hero {
+  padding: 56px 24px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.chap-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A84C' fill-opacity='0.05'%3E%3Cpath d='M30 0L37.5 15H52.5L41.25 24.38L45 40L30 31.25L15 40L18.75 24.38L7.5 15H22.5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.chap-hero.green-hero { background: linear-gradient(135deg,#071F10,#1A5C38,#0A2816); }
+.chap-hero.blue-hero  { background: linear-gradient(135deg,#07101F,#1A3A6A,#0A1830); }
+.chap-hero.purple-hero{ background: linear-gradient(135deg,#12071F,#3A1A6A,#180A30); }
+.chap-hero.teal-hero  { background: linear-gradient(135deg,#071818,#1A5C5C,#0A2020); }
+
+.chap-hero .ch-arabic {
+  font-family: 'Amiri', serif;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  color: var(--gold);
+  display: block;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.chap-hero .ch-sub {
+  font-size: 0.82rem;
+  color: rgba(240,208,128,0.6);
+  font-style: italic;
+  margin-bottom: 18px;
+  position: relative;
+  display: block;
+}
+
+.chap-hero h1 {
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 900;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.chap-hero h1 em { color: var(--gold); font-style: normal; }
+
+.chap-hero p {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.65);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
+  position: relative;
+}
+
+/* ===== PAGE NAV (Prev/Home/Next) ===== */
+.page-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 20px;
+  flex-wrap: wrap;
+}
+
+.pnav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(201,168,76,0.35);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.75);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.pnav-btn:hover {
+  background: rgba(201,168,76,0.12);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+
+.pnav-btn.home-btn {
+  background: rgba(201,168,76,0.1);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.pnav-btn.home-btn:hover {
+  background: var(--gold);
+  color: var(--emerald-dark);
+}
+
+.pnav-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.pnav-btn.last-page {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(201,168,76,0.2);
+  color: rgba(255,255,255,0.35);
+  font-size: 0.8rem;
+}
+
+/* ===== CONTENT AREA ===== */
+.content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--cream);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border-left: 5px solid var(--emerald);
+  position: relative;
+  overflow: hidden;
+}
+
+.card.gold-b { border-left-color: var(--gold); }
+.card.red-b  { border-left-color: var(--red); }
+.card.blue-b { border-left-color: #3A7AB5; }
+.card.purple-b { border-left-color: #7A3AB5; }
+
+.card h3 { font-size: 1.15rem; font-weight: 800; color: var(--emerald-mid); margin-bottom: 10px; }
+.card p  { color: #444; line-height: 1.8; font-size: 0.93rem; }
+.card-icon { font-size: 1.9rem; margin-bottom: 12px; display: block; }
+
+/* ===== DEF BOX ===== */
+.def-box {
+  background: linear-gradient(135deg, var(--emerald-mid), #1A5C38);
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(201,168,76,0.3);
+}
+
+.def-box.dark-red { background: linear-gradient(135deg,#3A0A0A,#6A1A1A); }
+.def-box.dark-blue{ background: linear-gradient(135deg,#0A1A3A,#1A3A6A); }
+
+.def-box .arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  text-align: center;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.def-box .translate {
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.55);
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+.def-box p { color: rgba(255,255,255,0.85); line-height: 1.8; font-size: 0.93rem; }
+
+/* ===== GRID ===== */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-bottom: 20px; }
+
+/* ===== LIST ITEM ===== */
+.list-item {
+  background: var(--cream);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.1);
+}
+
+.bullet {
+  min-width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 800;
+  flex-shrink: 0;
+}
+
+.bg { background:#D4EFDF; color:var(--emerald); }
+.br { background:#FADADD; color:var(--red); }
+.bo { background:#FEF9E7; color:#B7950B; }
+.bb { background:#D6EAF8; color:#1A5276; }
+
+.list-item .text { flex: 1; }
+.list-item .text strong { display:block; font-size:0.93rem; color:#1a1a1a; margin-bottom:3px; }
+.list-item .text span  { font-size:0.85rem; color:#555; line-height:1.6; }
+
+/* ===== ACCORDION ===== */
+.accordion {
+  background: var(--cream);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.1);
+}
+
+.accordion-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.93rem;
+  color: var(--emerald-mid);
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.accordion-header:hover { background: #F0EDDF; }
+.accordion-header .acc-left { display:flex; align-items:center; gap:10px; }
+.acc-arrow { font-size:0.85rem; transition: transform 0.3s; }
+.accordion.open .acc-arrow { transform: rotate(180deg); }
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0 20px;
+}
+
+.accordion.open .accordion-body { max-height: 800px; }
+
+.accordion-body-inner {
+  padding: 4px 0 18px;
+  color: #444;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  border-top: 1px solid #e8e2cc;
+}
+
+/* ===== TABLE ===== */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+.compare-table thead tr {
+  background: linear-gradient(90deg, var(--emerald-mid), #1A6640);
+}
+
+.compare-table thead th {
+  padding: 14px 18px;
+  color: var(--gold);
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.compare-table tbody tr {
+  background: var(--cream);
+  border-bottom: 1px solid #e5e0cc;
+  transition: background 0.2s;
+}
+
+.compare-table tbody tr:hover { background: #F7F2E2; }
+
+.compare-table tbody td {
+  padding: 12px 18px;
+  font-size: 0.87rem;
+  color: #333;
+  vertical-align: top;
+}
+
+.compare-table tbody td:first-child { font-weight: 700; color: var(--emerald-mid); }
+
+.tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.tg { background:#D4EFDF; color:#1A7A4A; }
+.tr { background:#FADADD; color:#A93226; }
+
+/* ===== SECTION HEADER ===== */
+.sec-hdr {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.sec-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--emerald-mid);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.sec-hdr h2 {
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+  color: white;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.sec-hdr p {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.9rem;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ===== PILLARS ===== */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.pillar {
+  background: linear-gradient(145deg, var(--cream), #F5EFD5);
+  border-radius: 14px;
+  padding: 22px 16px;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+  border-top: 4px solid var(--gold);
+  transition: transform 0.25s;
+}
+
+.pillar:hover { transform: translateY(-4px); }
+.pillar .num { font-family:'Amiri',serif; font-size:2rem; color:var(--gold); font-weight:700; line-height:1; margin-bottom:7px; }
+.pillar h4 { font-size:0.9rem; font-weight:800; color:var(--emerald-mid); margin-bottom:5px; }
+.pillar p  { font-size:0.8rem; color:#555; line-height:1.6; }
+
+/* ===== STORY CARD ===== */
+.story-card {
+  background: linear-gradient(135deg, #FFF8E7, #FDF0C0);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 2px solid rgba(201,168,76,0.4);
+  box-shadow: 0 8px 28px rgba(201,168,76,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.story-card::before {
+  content: '"';
+  position: absolute;
+  top: -10px; left: 16px;
+  font-family: 'Amiri', serif;
+  font-size: 8rem;
+  color: rgba(201,168,76,0.12);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.story-tag {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--emerald-mid);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.story-card h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--emerald-mid);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.story-card p {
+  color: #3a3a3a;
+  line-height: 1.85;
+  font-size: 0.93rem;
+  margin-bottom: 10px;
+}
+
+.story-card p:last-child { margin-bottom: 0; }
+
+.story-moral {
+  background: rgba(26,122,74,0.1);
+  border-left: 4px solid var(--emerald);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  margin-top: 14px;
+  font-size: 0.88rem;
+  color: var(--emerald-mid);
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* ===== GLOSARIUM ===== */
+.glos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.glos-item {
+  background: var(--cream);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border-top: 3px solid var(--gold);
+  transition: transform 0.2s;
+}
+
+.glos-item:hover { transform: translateY(-3px); }
+
+.glos-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.glos-latin {
+  font-size: 0.8rem;
+  color: var(--emerald);
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.glos-item h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--emerald-mid);
+  margin-bottom: 5px;
+}
+
+.glos-item p {
+  font-size: 0.83rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ===== QUIZ ===== */
+.quiz-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.quiz-progress-wrap {
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  height: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--emerald-light), var(--gold));
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.quiz-counter {
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 28px;
+  font-weight: 700;
+}
+
+.quiz-card {
+  background: var(--cream);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  animation: fadeUp 0.4s ease;
+}
+
+.quiz-card .q-num {
+  display: inline-block;
+  background: var(--emerald-mid);
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  letter-spacing: 0.5px;
+}
+
+.quiz-card h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--emerald-mid);
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.quiz-options { display: grid; gap: 10px; }
+
+.quiz-option {
+  padding: 13px 18px;
+  border-radius: 12px;
+  border: 2px solid #DDD;
+  background: white;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.quiz-option:hover:not(:disabled) { border-color: var(--emerald); background: #F0FBF5; }
+.quiz-option.correct { border-color: #27AE60; background: #EAFAF1; color: #1A7A4A; font-weight:700; }
+.quiz-option.wrong   { border-color: #E74C3C; background: #FDEDEC; color: #A93226; }
+.quiz-option:disabled { cursor: not-allowed; }
+
+.quiz-feedback {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: none;
+  line-height: 1.6;
+}
+
+.quiz-feedback.correct { background: #D4EFDF; color: #1A7A4A; }
+.quiz-feedback.wrong   { background: #FADADD; color: #A93226; }
+
+.quiz-next-btn {
+  margin-top: 18px;
+  width: 100%;
+  padding: 13px;
+  background: var(--emerald);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+
+.quiz-next-btn:hover { background: var(--emerald-light); transform: translateY(-2px); }
+
+.quiz-result {
+  text-align: center;
+  padding: 40px 20px;
+  animation: fadeUp 0.5s ease;
+}
+
+.qr-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
+.qr-title { font-size: 1.6rem; font-weight: 900; color: white; margin-bottom: 8px; }
+.qr-score { font-size: 3rem; font-weight: 900; color: var(--gold); margin: 12px 0; }
+.qr-label { font-size: 0.9rem; color: rgba(255,255,255,0.5); }
+.qr-msg   { font-size: 1rem; color: rgba(255,255,255,0.75); margin: 16px 0 28px; line-height: 1.6; }
+
+.qr-badges-earned {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.qr-badge-item {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.qr-badge-item .bi { font-size: 1.8rem; margin-bottom: 4px; display:block; }
+.qr-badge-item .bn { font-size: 0.78rem; font-weight: 700; color: var(--gold-light); }
+
+.qr-retry-btn {
+  background: var(--gold);
+  color: var(--emerald-mid);
+  border: none;
+  padding: 14px 36px;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qr-retry-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 28px 20px;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.8rem;
+  border-top: 1px solid rgba(201,168,76,0.15);
+  position: relative;
+  z-index: 1;
+}
+
+footer .fa { font-family:'Amiri',serif; font-size:1.3rem; color:var(--gold); display:block; margin-bottom:6px; }
+
+/* ===== REVEAL ===== */
+.reveal { opacity:0; transform:translateY(22px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.35); border-radius: 999px; }
+
+/* ===== HOME CREDIT ===== */
+.home-credit {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 16px;
+  padding: 14px 24px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#home-logo {
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: white;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.credit-text { text-align: left; }
+.credit-name { font-size: 0.95rem; font-weight: 800; color: var(--gold-light); }
+.credit-sub  { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+/* ===== CATATAN ===== */
+.catatan-wrap { max-width: 780px; margin: 0 auto; padding: 28px 20px 48px; }
+.catatan-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.ct-search-wrap { flex: 1; min-width: 180px; }
+.ct-search-wrap input {
+  width: 100%; padding: 10px 16px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06); color: white;
+  font-family: 'Nunito', sans-serif; font-size: 0.88rem; outline: none;
+}
+.ct-search-wrap input:focus { border-color: var(--gold); }
+.ct-search-wrap input::placeholder { color: rgba(255,255,255,0.3); }
+.ct-count { font-size: 0.78rem; color: rgba(255,255,255,0.35); font-weight: 700; white-space: nowrap; }
+.ct-btn {
+  padding: 10px 18px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8);
+  font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.ct-btn:hover { background: rgba(255,255,255,0.13); }
+.ct-btn.primary { background: var(--gold); color: var(--emerald-dark); border-color: var(--gold); }
+.ct-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,168,76,0.35); }
+.ct-btn.danger { background: rgba(192,57,43,0.15); color: #E74C3C; border-color: rgba(192,57,43,0.3); }
+.ct-btn.danger:hover { background: rgba(192,57,43,0.25); }
+.catatan-editor {
+  background: rgba(255,255,255,0.04); border: 1.5px solid rgba(201,168,76,0.3);
+  border-radius: 18px; padding: 20px; margin-bottom: 24px;
+}
+.ct-title-input {
+  width: 100%; padding: 12px 16px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06); color: white;
+  font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+  outline: none; margin-bottom: 12px;
+}
+.ct-title-input:focus { border-color: var(--gold); }
+.ct-title-input::placeholder { color: rgba(255,255,255,0.25); }
+.ct-tags-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.ct-tag-label { font-size: 0.78rem; color: rgba(255,255,255,0.4); font-weight: 700; }
+.ct-tag {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.8rem; color: rgba(255,255,255,0.6); cursor: pointer;
+  padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.2s;
+}
+.ct-tag:hover { border-color: var(--gold); color: var(--gold-light); }
+.ct-tag input { display: none; }
+.ct-body-input {
+  width: 100%; min-height: 160px; padding: 14px 16px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9);
+  font-family: 'Nunito', sans-serif; font-size: 0.9rem; line-height: 1.7;
+  outline: none; resize: vertical; margin-bottom: 14px;
+}
+.ct-body-input:focus { border-color: var(--gold); }
+.ct-body-input::placeholder { color: rgba(255,255,255,0.2); }
+.ct-editor-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.catatan-list { display: flex; flex-direction: column; gap: 12px; }
+.catatan-item {
+  background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 18px 20px; cursor: pointer; transition: all 0.2s;
+}
+.catatan-item:hover { background: rgba(255,255,255,0.08); border-color: rgba(201,168,76,0.3); }
+.catatan-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ci-tag-badge {
+  font-size: 0.72rem; font-weight: 800; padding: 3px 10px; border-radius: 20px;
+  background: rgba(201,168,76,0.15); color: var(--gold-light);
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.ci-date { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-left: auto; }
+.ci-title { font-size: 0.98rem; font-weight: 800; color: rgba(255,255,255,0.9); margin-bottom: 5px; }
+.ci-preview {
+  font-size: 0.82rem; color: rgba(255,255,255,0.4); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.catatan-empty { text-align: center; color: rgba(255,255,255,0.25); font-size: 1rem; padding: 60px 20px; line-height: 2; }
+
+@media (max-width: 600px) {
+  .home-menu { grid-template-columns: 1fr 1fr; }
+  .pb-bar-wrap { width: 70px; }
+  .home-credit { flex-direction: column; text-align: center; }
+  .credit-text { text-align: center; }
+}
+
+/* ===== PAGE SLIDE TRANSITION ===== */
+#main-wrap { position: relative; z-index:1; padding-top:48px; overflow:hidden; }
+.section { display:none; }
+.section.active { display:block; }
+.section.slide-in-right { animation: slideInRight 0.38s cubic-bezier(.4,0,.2,1); }
+.section.slide-in-left  { animation: slideInLeft  0.38s cubic-bezier(.4,0,.2,1); }
+.section.slide-out-right{ animation: slideOutRight 0.28s cubic-bezier(.4,0,.2,1); }
+.section.slide-out-left { animation: slideOutLeft  0.28s cubic-bezier(.4,0,.2,1); }
+
+@keyframes slideInRight  { from{opacity:0;transform:translateX(60px)}  to{opacity:1;transform:translateX(0)} }
+@keyframes slideInLeft   { from{opacity:0;transform:translateX(-60px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideOutRight { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(60px)} }
+@keyframes slideOutLeft  { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(-60px)} }
+
+
+/* ===== LEARNING PATH ===== */
+.learning-path {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 20px 48px;
+}
+
+.lp-title {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.lp-title::before, .lp-title::after {
+  content:'';
+  position:absolute; top:50%;
+  width:60px; height:1px;
+  background: rgba(201,168,76,0.35);
+}
+.lp-title::before { right: calc(50% + 100px); }
+.lp-title::after  { left:  calc(50% + 100px); }
+
+.lp-track {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.lp-group { margin-bottom: 20px; }
+
+.lp-group-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+.lp-steps {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lp-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  flex: 1;
+  min-width: 130px;
+}
+
+.lp-step:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.4);
+}
+
+.lp-step.done {
+  border-color: var(--emerald-light);
+  background: rgba(45,179,112,0.1);
+}
+
+.lp-step.done .lp-step-dot { background: var(--emerald-light); }
+.lp-step.done .lp-step-name { color: rgba(255,255,255,0.9); }
+
+.lp-step-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.lp-step-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.3;
+  transition: color 0.3s;
+}
+
+.lp-step.active-now {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.12);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+
+.lp-step.active-now .lp-step-dot { background: var(--gold); }
+.lp-step.active-now .lp-step-name { color: var(--gold-light); }
+
+.lp-progress-summary {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.lp-progress-summary strong { color: var(--gold); }
+
+/* ===== FALLING STARS / CHAPTER ANIM ===== */
+.chap-particles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.chap-particle {
+  position: absolute;
+  font-size: 1rem;
+  opacity: 0;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0%   { opacity: 0; transform: translateY(-20px) rotate(0deg); }
+  10%  { opacity: 0.8; }
+  90%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(110px) rotate(360deg); }
+}
+
+/* ===== MINIGAME ===== */
+#sec-minigame .chap-hero { background: linear-gradient(135deg,#1A1A0A,#4A4A10,#2A2A0A); }
+
+.mg-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+.mg-instructions {
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.mg-food-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 28px;
+  min-height: 60px;
+}
+
+.mg-food-chip {
+  background: linear-gradient(135deg,#FDF6E3,#F5EFD5);
+  border: 2px solid #DDD;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #333;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.mg-food-chip:active { cursor: grabbing; transform: scale(1.05); }
+.mg-food-chip.dragging { opacity: 0.4; }
+.mg-food-chip.placed { display: none; }
+
+.mg-drop-zones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.mg-drop-zone {
+  border-radius: 18px;
+  padding: 20px;
+  min-height: 160px;
+  border: 2.5px dashed;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.mg-drop-zone.halal-zone {
+  border-color: rgba(45,179,112,0.5);
+  background: rgba(45,179,112,0.05);
+}
+
+.mg-drop-zone.haram-zone {
+  border-color: rgba(192,57,43,0.5);
+  background: rgba(192,57,43,0.05);
+}
+
+.mg-drop-zone.drag-over {
+  transform: scale(1.02);
+  border-style: solid;
+}
+
+.mg-drop-zone.halal-zone.drag-over { background: rgba(45,179,112,0.15); border-color: var(--emerald-light); }
+.mg-drop-zone.haram-zone.drag-over  { background: rgba(192,57,43,0.15);  border-color: #E74C3C; }
+
+.mg-zone-title {
+  font-size: 1rem;
+  font-weight: 900;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.halal-zone .mg-zone-title { color: var(--emerald-light); }
+.haram-zone  .mg-zone-title { color: #E74C3C; }
+
+.mg-zone-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 40px;
+}
+
+.mg-zone-item {
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mg-zone-item.correct { background: #D4EFDF; color: #1A7A4A; border: 1.5px solid #A9DFBF; }
+.mg-zone-item.wrong   { background: #FADADD; color: #A93226; border: 1.5px solid #F5B7B1; }
+.mg-zone-item.pending { background: #FDF6E3; color: #555; border: 1.5px solid #DDD; }
+
+.mg-check-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 13px 40px;
+  background: var(--gold);
+  color: var(--emerald-dark);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mg-check-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+
+.mg-result-msg {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  min-height: 30px;
+  color: white;
+}
+
+.mg-reset-btn {
+  display: none;
+  margin: 12px auto 0;
+  padding: 10px 28px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mg-reset-btn:hover { background: rgba(255,255,255,0.14); }
+
+/* ===== FLASHCARD ===== */
+.fc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.fc-card {
+  height: 160px;
+  perspective: 900px;
+  cursor: pointer;
+}
+
+.fc-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+  border-radius: 16px;
+}
+
+.fc-card.flipped .fc-inner { transform: rotateY(180deg); }
+
+.fc-front, .fc-back {
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backface-visibility: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.fc-front {
+  background: linear-gradient(145deg, var(--emerald-mid), #1A5C38);
+  border: 1.5px solid rgba(201,168,76,0.3);
+}
+
+.fc-back {
+  background: linear-gradient(145deg, #FDF6E3, #F5EFD5);
+  transform: rotateY(180deg);
+  border: 1.5px solid var(--gold);
+}
+
+.fc-arabic {
+  font-family: 'Amiri', serif;
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 6px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.fc-hint {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  font-style: italic;
+}
+
+.fc-back-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--emerald-mid);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.fc-back-latin {
+  font-size: 0.78rem;
+  color: var(--emerald);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.fc-back-desc {
+  font-size: 0.78rem;
+  color: #555;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ===== RAPOR ===== */
+.rapor-card {
+  background: linear-gradient(135deg, #FDF6E3, #FFF8E7);
+  border-radius: 24px;
+  padding: 36px 32px;
+  max-width: 500px;
+  margin: 0 auto 24px;
+  border: 3px solid var(--gold);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.rapor-card::before {
+  content: '☪';
+  position: absolute;
+  top: -20px; right: 20px;
+  font-size: 8rem;
+  color: rgba(201,168,76,0.06);
+  pointer-events: none;
+}
+
+.rapor-header {
+  text-align: center;
+  border-bottom: 2px solid rgba(201,168,76,0.3);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.rapor-school {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--emerald-mid);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.rapor-title-text {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--emerald-dark);
+  margin-bottom: 2px;
+}
+
+.rapor-subtitle { font-size: 0.8rem; color: #777; }
+
+.rapor-score-big {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.rapor-score-num {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--emerald);
+  line-height: 1;
+}
+
+.rapor-score-label {
+  font-size: 0.82rem;
+  color: #888;
+  margin-top: 4px;
+}
+
+.rapor-rows { margin-bottom: 16px; }
+
+.rapor-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.1);
+  font-size: 0.87rem;
+}
+
+.rapor-row:last-child { border-bottom: none; }
+.rapor-row .rl { color: #555; font-weight: 600; }
+.rapor-row .rv { font-weight: 800; color: var(--emerald-dark); }
+
+.rapor-grade {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.rapor-grade-val {
+  display: inline-block;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin: 0 auto 6px;
+}
+
+.grade-a { background: #D4EFDF; color: #1A7A4A; }
+.grade-b { background: #D6EAF8; color: #1A5276; }
+.grade-c { background: #FEF9E7; color: #B7950B; }
+.grade-d { background: #FADADD; color: #A93226; }
+
+.rapor-grade-label { font-size: 0.82rem; color: #666; }
+
+.rapor-footer-text {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #aaa;
+  margin-top: 14px;
+  font-style: italic;
+}
+
+.rapor-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.rapor-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 7px;
+}
+
+.rapor-btn.primary {
+  background: var(--gold);
+  color: var(--emerald-dark);
+}
+
+.rapor-btn.secondary {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.75);
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+
+.rapor-btn:hover { transform: translateY(-2px); }
+
+</style>
+</head>
+<body>
+
+<!-- ===== STARS CANVAS ===== -->
+<canvas id="stars-canvas"></canvas>
+
+<!-- ===== BADGE POPUP ===== -->
+<div id="badge-popup">
+  <span class="bp-icon" id="bp-icon">🏅</span>
+  <div class="bp-title">Badge Baru!</div>
+  <div class="bp-name" id="bp-name">Badge</div>
+  <div class="bp-desc" id="bp-desc">Kamu hebat!</div>
+</div>
+
+<!-- ===== POINTS BAR ===== -->
+<div id="points-bar">
+  <div class="pb-brand">☪ <span>PAI</span> Kelas 6</div>
+  <div class="pb-center">
+    <span class="pb-pts">⭐ <span id="pts-display">0</span> poin</span>
+    <div class="pb-bar-wrap"><div class="pb-bar-fill" id="pts-bar"></div></div>
+  </div>
+  <div class="pb-badges" id="pb-badges-row"></div>
+</div>
+
+<!-- ===== MAIN WRAP ===== -->
+<div id="main-wrap">
+
+<!-- =============================== HOME =============================== -->
+<div id="sec-home" class="section active">
+  <div class="home-hero">
+    <span class="home-moon">🌙</span>
+    <div class="home-arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+    <div class="home-bismillah-sub">Bismillahirrahmanirrahim</div>
+    <h1 class="home-title">Pendidikan Agama Islam<br><em>Kelas 6 SD</em></h1>
+    <p class="home-desc">Belajar tentang Hukum Halal & Haram serta Ibadah Puasa dengan cara yang menyenangkan dan mudah dipahami. Kumpulkan poin dan badge! 🌟</p>
+    <div class="home-credit">
+      <img id="home-logo" src="logo.png" alt="Logo Sekolah" onerror="this.style.display='none'">
+      <div class="credit-text">
+        <div class="credit-name">SDN Bakalan</div>
+        <div class="credit-sub">Media Pembelajaran PAI Kelas 6 · Dibuat oleh Claude AI</div>
+      </div>
+    </div>
+    <div class="home-menu">
+      <div class="home-menu-item" onclick="slideGoTo('sec-hh-1','right')">
+        <span class="hm-icon">⚖️</span>
+        <div class="hm-title">Halal & Haram</div>
+        <div class="hm-desc">Pengertian, dalil & contoh makanan halal haram</div>
+      </div>
+      <div class="home-menu-item" onclick="slideGoTo('sec-puasa-1','right')">
+        <span class="hm-icon">🌙</span>
+        <div class="hm-title">Ibadah Puasa</div>
+        <div class="hm-desc">Rukun, syarat, pembatal & hikmah puasa</div>
+      </div>
+      <div class="home-menu-item" onclick="slideGoTo('sec-minigame','right')">
+        <span class="hm-icon">🎮</span>
+        <div class="hm-title">Mini Game</div>
+        <div class="hm-desc">Drag & drop cocokkan makanan halal atau haram</div>
+      </div>
+      <div class="home-menu-item" onclick="slideGoTo('sec-kisah-1','right')">
+        <span class="hm-icon">📖</span>
+        <div class="hm-title">Kisah Islami</div>
+        <div class="hm-desc">Kisah inspiratif berkaitan dengan materi</div>
+      </div>
+      <div class="home-menu-item" onclick="slideGoTo('sec-glosarium','right')">
+        <span class="hm-icon">📚</span>
+        <div class="hm-title">Glosarium</div>
+        <div class="hm-desc">Flashcard istilah Arab — klik untuk balik kartu</div>
+      </div>
+      <div class="home-menu-item" onclick="slideGoTo('sec-quiz','right')">
+        <span class="hm-icon">📝</span>
+        <div class="hm-title">Latihan Soal</div>
+        <div class="hm-desc">Kuis interaktif & raih badge + rapor nilai!</div>
+      </div>
+      <div class="home-menu-item" onclick="slideGoTo('sec-catatan','right')">
+        <span class="hm-icon">✏️</span>
+        <div class="hm-title">Catatan Pribadi</div>
+        <div class="hm-desc">Tulis & simpan catatanmu sendiri di sini</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARNING PATH -->
+  <div class="learning-path">
+    <div class="lp-title">🗺️ Peta Belajarmu</div>
+    <div id="lp-track" class="lp-track">
+      <div class="lp-group">
+        <div class="lp-group-label">⚖️ Bab Halal &amp; Haram</div>
+        <div class="lp-steps">
+          <div class="lp-step" id="lp-sec-hh-1" onclick="slideGoTo('sec-hh-1','right')">
+            <div class="lp-step-dot">1</div>
+            <div class="lp-step-name">Pengertian</div>
+          </div>
+          <div class="lp-step" id="lp-sec-hh-2" onclick="slideGoTo('sec-hh-2','right')">
+            <div class="lp-step-dot">2</div>
+            <div class="lp-step-name">Contoh Makanan</div>
+          </div>
+          <div class="lp-step" id="lp-sec-hh-3" onclick="slideGoTo('sec-hh-3','right')">
+            <div class="lp-step-dot">3</div>
+            <div class="lp-step-name">Hikmah</div>
+          </div>
+        </div>
+      </div>
+      <div class="lp-group">
+        <div class="lp-group-label">🌙 Bab Ibadah Puasa</div>
+        <div class="lp-steps">
+          <div class="lp-step" id="lp-sec-puasa-1" onclick="slideGoTo('sec-puasa-1','right')">
+            <div class="lp-step-dot">1</div>
+            <div class="lp-step-name">Pengertian</div>
+          </div>
+          <div class="lp-step" id="lp-sec-puasa-2" onclick="slideGoTo('sec-puasa-2','right')">
+            <div class="lp-step-dot">2</div>
+            <div class="lp-step-name">Syarat &amp; Rukun</div>
+          </div>
+          <div class="lp-step" id="lp-sec-puasa-3" onclick="slideGoTo('sec-puasa-3','right')">
+            <div class="lp-step-dot">3</div>
+            <div class="lp-step-name">Pembatal</div>
+          </div>
+          <div class="lp-step" id="lp-sec-puasa-4" onclick="slideGoTo('sec-puasa-4','right')">
+            <div class="lp-step-dot">4</div>
+            <div class="lp-step-name">Hikmah</div>
+          </div>
+        </div>
+      </div>
+      <div class="lp-group">
+        <div class="lp-group-label">📖 Kisah &amp; Lainnya</div>
+        <div class="lp-steps">
+          <div class="lp-step" id="lp-sec-kisah-1" onclick="slideGoTo('sec-kisah-1','right')">
+            <div class="lp-step-dot">📖</div>
+            <div class="lp-step-name">Kisah 1</div>
+          </div>
+          <div class="lp-step" id="lp-sec-kisah-2" onclick="slideGoTo('sec-kisah-2','right')">
+            <div class="lp-step-dot">📖</div>
+            <div class="lp-step-name">Kisah 2</div>
+          </div>
+          <div class="lp-step" id="lp-sec-minigame" onclick="slideGoTo('sec-minigame','right')">
+            <div class="lp-step-dot">🎮</div>
+            <div class="lp-step-name">Mini Game</div>
+          </div>
+          <div class="lp-step" id="lp-sec-glosarium" onclick="slideGoTo('sec-glosarium','right')">
+            <div class="lp-step-dot">📚</div>
+            <div class="lp-step-name">Glosarium</div>
+          </div>
+          <div class="lp-step" id="lp-sec-quiz" onclick="slideGoTo('sec-quiz','right')">
+            <div class="lp-step-dot">📝</div>
+            <div class="lp-step-name">Kuis</div>
+          </div>
+          <div class="lp-step" id="lp-sec-catatan" onclick="slideGoTo('sec-catatan','right')">
+            <div class="lp-step-dot">✏️</div>
+            <div class="lp-step-name">Catatan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lp-progress-summary" id="lp-summary">Selesaikan semua halaman untuk mendapat badge 🎓</div>
+  </div>
+</div>
+
+<!-- =============================== HALAL HARAM 1 =============================== -->
+<div id="sec-hh-1" class="section">
+  <div class="chap-hero green-hero">
+    <div class="chap-particles" id="particles-hh-1"></div>
+    <span class="ch-arabic">الْحَلَالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ</span>
+    <span class="ch-sub">"Yang halal itu jelas dan yang haram itu jelas" – HR. Bukhari & Muslim</span>
+    <h1>Hukum <em>Halal & Haram</em></h1>
+    <p>Bab 1 dari 3 — Pengertian & Dasar Hukum</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 1 · Pengertian</div>
+      <h2>Apa Itu Halal dan Haram?</h2>
+      <p>Mari kita pelajari makna kedua kata penting ini dalam Islam.</p>
+    </div>
+
+    <div class="grid-2 reveal">
+      <div class="card">
+        <span class="card-icon">✅</span>
+        <h3 style="color:var(--emerald);">HALAL</h3>
+        <p><strong>Halal</strong> (حَلَال) berasal dari bahasa Arab yang artinya <em>"diperbolehkan"</em> atau <em>"diizinkan"</em>. Segala sesuatu yang diizinkan syariat Islam untuk dikonsumsi, digunakan, atau dilakukan.</p>
+      </div>
+      <div class="card red-b">
+        <span class="card-icon">❌</span>
+        <h3 style="color:var(--red);">HARAM</h3>
+        <p><strong>Haram</strong> (حَرَام) berasal dari bahasa Arab yang artinya <em>"dilarang"</em> atau <em>"terlarang"</em>. Segala sesuatu yang dilarang syariat Islam dan pelakunya berdosa jika melakukannya.</p>
+      </div>
+    </div>
+
+    <div class="sec-hdr reveal" style="margin-top:36px;">
+      <div class="sec-badge">Dasar Hukum</div>
+      <h2>Dalil dari Al-Qur'an</h2>
+    </div>
+
+    <div class="def-box reveal">
+      <span class="arabic">يَا أَيُّهَا النَّاسُ كُلُوا مِمَّا فِي الْأَرْضِ حَلَالًا طَيِّبًا</span>
+      <div class="translate">QS. Al-Baqarah: 168</div>
+      <p>"Wahai manusia! Makanlah dari (makanan) yang halal dan baik yang terdapat di bumi, dan janganlah kamu mengikuti langkah-langkah setan. Sungguh, setan itu musuh yang nyata bagimu."</p>
+    </div>
+
+    <div class="def-box dark-red reveal">
+      <span class="arabic">حُرِّمَتْ عَلَيْكُمُ الْمَيْتَةُ وَالدَّمُ وَلَحْمُ الْخِنزِيرِ</span>
+      <div class="translate">QS. Al-Maidah: 3</div>
+      <p>"Diharamkan bagimu (memakan) bangkai, darah, daging babi, dan (daging) hewan yang disembelih bukan atas (nama) Allah, yang tercekik, yang dipukul, yang jatuh, yang ditanduk, dan yang diterkam binatang buas..."</p>
+    </div>
+
+    <div class="card gold-b reveal">
+      <span class="card-icon">💡</span>
+      <h3>Mengapa Ada Halal dan Haram?</h3>
+      <p>Allah SWT menetapkan aturan halal dan haram bukan untuk mempersulit manusia, tetapi untuk <strong>menjaga kesehatan, akal, jiwa, keturunan, dan harta</strong> manusia (Maqashid Syariah). Setiap yang diharamkan pasti mengandung mudharat (bahaya), dan setiap yang dihalalkan mengandung manfaat.</p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" disabled>← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="goTo('sec-hh-2')">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- =============================== HALAL HARAM 2 =============================== -->
+<div id="sec-hh-2" class="section">
+  <div class="chap-hero green-hero">
+    <span class="ch-arabic">وَكُلُوا مِمَّا رَزَقَكُمُ اللَّهُ حَلَالًا طَيِّبًا</span>
+    <span class="ch-sub">QS. Al-Maidah: 88</span>
+    <h1>Makanan <em>Halal & Haram</em></h1>
+    <p>Bab 2 dari 3 — Contoh Makanan Halal & Haram</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 2 · Makanan Halal</div>
+      <h2>Makanan yang Dihalalkan</h2>
+    </div>
+
+    <div class="list-item reveal">
+      <div class="bullet bg">🐄</div>
+      <div class="text">
+        <strong>Daging Hewan Ternak (Disembelih Syar'i)</strong>
+        <span>Sapi, kambing, domba, ayam, bebek yang disembelih dengan membaca Bismillah, memutus urat nadi, tenggorokan, dan kerongkongan. Hewan harus dalam keadaan hidup saat disembelih.</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet bg">🐟</div>
+      <div class="text">
+        <strong>Ikan dan Hasil Laut</strong>
+        <span>Semua jenis ikan dan makhluk laut halal tanpa perlu disembelih. Ini berdasarkan sabda Nabi: "Dihalalkan bagi kita dua bangkai: ikan dan belalang." (HR. Ahmad)</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet bg">🥦</div>
+      <div class="text">
+        <strong>Sayuran, Buah, dan Tumbuhan</strong>
+        <span>Semua jenis tumbuhan pada dasarnya halal kecuali yang memabukkan atau beracun berbahaya. Termasuk biji-bijian, kacang-kacangan, dan rempah-rempah.</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet bg">🥛</div>
+      <div class="text">
+        <strong>Susu, Telur, dan Madu</strong>
+        <span>Produk hewani seperti susu sapi/kambing, telur ayam, dan madu lebah halal selama tidak tercampur dengan bahan haram. Allah memuliakan madu dalam Al-Qur'an (QS. An-Nahl: 69).</span>
+      </div>
+    </div>
+
+    <div class="sec-hdr reveal" style="margin-top:36px;">
+      <div class="sec-badge">Makanan Haram</div>
+      <h2>Makanan yang Diharamkan</h2>
+    </div>
+
+    <div class="list-item reveal">
+      <div class="bullet br">🐷</div>
+      <div class="text">
+        <strong>Daging Babi & Turunannya</strong>
+        <span>Babi dan semua produk turunannya (lemak babi/lard, gelatin babi, dll) diharamkan dalam QS. Al-Baqarah: 173. Secara ilmiah, babi mengandung parasit berbahaya seperti cacing pita.</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet br">💀</div>
+      <div class="text">
+        <strong>Bangkai</strong>
+        <span>Hewan yang mati karena penyakit, kecelakaan, atau tidak disembelih secara syar'i. Dikecualikan ikan dan belalang yang boleh meski "bangkai".</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet br">🩸</div>
+      <div class="text">
+        <strong>Darah yang Mengalir</strong>
+        <span>Darah segar yang mengalir haram dimakan. Namun sisa darah dalam daging setelah dimasak dimaafkan. Darah yang dijadikan makanan (seperti pada sebagian budaya) jelas haram.</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet br">🍺</div>
+      <div class="text">
+        <strong>Khamr (Minuman Memabukkan)</strong>
+        <span>Semua yang memabukkan disebut khamr dan haram. "Setiap yang memabukkan adalah khamr, dan setiap khamr adalah haram." (HR. Muslim). Termasuk bir, wine, dan minuman keras lainnya.</span>
+      </div>
+    </div>
+    <div class="list-item reveal">
+      <div class="bullet br">🦅</div>
+      <div class="text">
+        <strong>Hewan Buas Bertaring & Burung Berkuku Tajam</strong>
+        <span>Harimau, singa, serigala, buaya, elang, alap-alap haram karena Nabi SAW melarang memakan binatang buas yang bertaring dan burung yang berkuku tajam (HR. Muslim).</span>
+      </div>
+    </div>
+
+    <table class="compare-table reveal">
+      <thead><tr><th>Jenis</th><th>Contoh</th><th>Status</th><th>Dalil</th></tr></thead>
+      <tbody>
+        <tr><td>Sapi, Kambing, Ayam</td><td>Disembelih bismillah</td><td><span class="tag tg">✅ HALAL</span></td><td>QS. Al-Maidah: 1</td></tr>
+        <tr><td>Ikan & Hasil Laut</td><td>Ikan kakap, udang</td><td><span class="tag tg">✅ HALAL</span></td><td>QS. Al-Maidah: 96</td></tr>
+        <tr><td>Madu, Susu, Telur</td><td>Tanpa campuran haram</td><td><span class="tag tg">✅ HALAL</span></td><td>QS. An-Nahl: 69</td></tr>
+        <tr><td>Babi</td><td>Daging, lemak babi</td><td><span class="tag tr">❌ HARAM</span></td><td>QS. Al-Baqarah: 173</td></tr>
+        <tr><td>Bangkai</td><td>Mati tanpa disembelih</td><td><span class="tag tr">❌ HARAM</span></td><td>QS. Al-Maidah: 3</td></tr>
+        <tr><td>Minuman Alkohol</td><td>Bir, wine, miras</td><td><span class="tag tr">❌ HARAM</span></td><td>QS. Al-Maidah: 90</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-hh-1')">← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="goTo('sec-hh-3')">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- =============================== HALAL HARAM 3 =============================== -->
+<div id="sec-hh-3" class="section">
+  <div class="chap-hero green-hero">
+    <span class="ch-arabic">وَمَا أَصَابَكُم مِّن مُّصِيبَةٍ فَبِمَا كَسَبَتْ أَيْدِيكُمْ</span>
+    <span class="ch-sub">QS. Asy-Syura: 30</span>
+    <h1>Hikmah <em>Halal & Haram</em></h1>
+    <p>Bab 3 dari 3 — Hikmah & Manfaat</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 3 · Hikmah</div>
+      <h2>Manfaat Mengikuti Aturan Halal & Haram</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card reveal">
+        <span class="card-icon">🏥</span>
+        <h3>Menjaga Kesehatan Tubuh</h3>
+        <p>Babi mengandung cacing pita (Taenia solium) yang berbahaya. Alkohol merusak hati, otak, dan sistem saraf. Allah melarang karena ada mudharatnya bagi tubuh kita yang amanah dari-Nya.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon">🧠</span>
+        <h3>Menjaga Akal & Pikiran</h3>
+        <p>Khamr/alkohol merusak sel-sel otak dan menghilangkan akal sehat. Dengan menjauhi minuman haram, kita mempertahankan kemampuan berpikir jernih dan berakal sehat.</p>
+      </div>
+      <div class="card gold-b reveal">
+        <span class="card-icon">🙏</span>
+        <h3>Wujud Ketaatan kepada Allah</h3>
+        <p>Mematuhi aturan halal-haram adalah bukti nyata keimanan dan ketakwaan kita. Ini adalah salah satu cara termudah untuk mendekatkan diri kepada Allah dalam kehidupan sehari-hari.</p>
+      </div>
+      <div class="card gold-b reveal">
+        <span class="card-icon">💝</span>
+        <h3>Menjaga Kemuliaan Diri</h3>
+        <p>Manusia adalah makhluk termulia. Dengan mengonsumsi yang halal dan thayyib (baik), kita menjaga martabat diri sebagai khalifah Allah di bumi.</p>
+      </div>
+      <div class="card blue-b reveal">
+        <span class="card-icon">🤝</span>
+        <h3>Menjaga Keharmonisan Sosial</h3>
+        <p>Aturan halal-haram juga melindungi masyarakat dari kerusakan akibat alkohol, narkoba, dan makanan berbahaya lainnya, sehingga tercipta masyarakat yang sehat dan harmonis.</p>
+      </div>
+      <div class="card blue-b reveal">
+        <span class="card-icon">🌍</span>
+        <h3>Menjaga Lingkungan</h3>
+        <p>Konsumsi yang bijak dan sesuai syariat juga mengajarkan kita untuk tidak berlebihan (israf) dan menjaga keseimbangan alam yang Allah ciptakan untuk kita.</p>
+      </div>
+    </div>
+
+    <div class="def-box reveal">
+      <span class="arabic">فَكُلُوا مِمَّا رَزَقَكُمُ اللَّهُ حَلَالًا طَيِّبًا وَاشْكُرُوا نِعْمَتَ اللَّهِ</span>
+      <div class="translate">QS. An-Nahl: 114</div>
+      <p>"Maka makanlah yang halal lagi baik dari rezeki yang telah diberikan Allah kepadamu; dan syukurilah nikmat Allah jika kamu hanya menyembah kepada-Nya."</p>
+    </div>
+
+    <div class="card reveal" style="background:linear-gradient(135deg,#E8F8F0,#D4EFDF); border-left-color:var(--emerald);">
+      <span class="card-icon">⭐</span>
+      <h3>Ringkasan Penting</h3>
+      <p>Ingat selalu 3 prinsip dalam memilih makanan: <strong>(1) Halal</strong> – dibolehkan syariat; <strong>(2) Thayyib</strong> – baik & bergizi; <strong>(3) Tidak Israf</strong> – tidak berlebihan. Dengan ketiga prinsip ini, insya Allah kita akan sehat jasmani dan rohani. 💚</p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-hh-2')">← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" disabled title="Ini halaman terakhir bab ini">Halaman Terakhir ✓</button>
+  </div>
+</div>
+
+<!-- =============================== PUASA 1 =============================== -->
+<div id="sec-puasa-1" class="section">
+  <div class="chap-hero blue-hero">
+    <div class="chap-particles" id="particles-puasa-1"></div>
+    <span class="ch-arabic" style="color:#87CEEB;">يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ</span>
+    <span class="ch-sub" style="color:rgba(135,206,235,0.6);">QS. Al-Baqarah: 183</span>
+    <h1>Ibadah <em>Puasa</em></h1>
+    <p>Bab 1 dari 4 — Pengertian & Jenis Puasa</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 1 · Pengertian</div>
+      <h2>Apa Itu Puasa?</h2>
+    </div>
+
+    <div class="def-box dark-blue reveal">
+      <span class="arabic" style="color:#87CEEB;">الصِّيَامُ / الصَّوْمُ</span>
+      <div class="translate">Ash-Shiyam / Ash-Shaum</div>
+      <p><strong style="color:#87CEEB;">Puasa</strong> secara bahasa artinya <em>menahan diri</em>. Secara syariat, puasa adalah <strong style="color:#F0D080;">menahan diri dari makan, minum, dan semua hal yang membatalkan puasa — mulai dari terbit fajar hingga terbenam matahari — disertai niat karena Allah SWT.</strong></p>
+    </div>
+
+    <div class="def-box reveal">
+      <span class="arabic">كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ</span>
+      <div class="translate">QS. Al-Baqarah: 183</div>
+      <p>"Wahai orang-orang yang beriman! Diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang sebelum kamu agar kamu bertakwa."</p>
+    </div>
+
+    <div class="sec-hdr reveal" style="margin-top:36px;">
+      <div class="sec-badge">Jenis Puasa</div>
+      <h2>Macam-Macam Puasa dalam Islam</h2>
+    </div>
+
+    <div class="accordion reveal" onclick="toggleAcc(this)">
+      <div class="accordion-header">
+        <div class="acc-left"><span>🌙</span> Puasa Wajib — Puasa Ramadhan</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          Puasa Ramadhan dilaksanakan selama satu bulan penuh di bulan ke-9 kalender Hijriah. Hukumnya <strong>fardhu 'ain</strong> (wajib setiap Muslim yang memenuhi syarat). Ini adalah Rukun Islam ke-4.<br><br>
+          Jika tidak bisa berpuasa karena <strong>sakit</strong>, <strong>safar</strong>, <strong>haid</strong>, atau <strong>nifas</strong> → wajib mengqadha (mengganti) di hari lain setelah Ramadhan.<br>
+          Jika tidak bisa sama sekali karena tua/sakit permanen → wajib membayar <strong>fidyah</strong> (memberi makan fakir miskin).
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion reveal" onclick="toggleAcc(this)">
+      <div class="accordion-header">
+        <div class="acc-left"><span>⭐</span> Puasa Sunnah</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          <strong>Puasa Senin-Kamis</strong> – Hari amal diangkat ke langit<br>
+          <strong>Puasa Ayyamul Bidh</strong> – Tanggal 13, 14, 15 bulan Hijriah<br>
+          <strong>Puasa 6 hari Syawal</strong> – Setelah Idul Fitri, pahalanya seperti puasa setahun penuh<br>
+          <strong>Puasa Arafah</strong> – 9 Dzulhijjah, menghapus dosa 2 tahun (bukan untuk jamaah haji)<br>
+          <strong>Puasa Asyura</strong> – 10 Muharram, menghapus dosa setahun yang lalu<br>
+          <strong>Puasa Dawud</strong> – Sehari puasa, sehari tidak. Puasa paling dicintai Allah
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion reveal" onclick="toggleAcc(this)">
+      <div class="accordion-header">
+        <div class="acc-left"><span>⚠️</span> Puasa yang Dilarang (Haram)</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-body-inner">
+          ❌ <strong>Idul Fitri (1 Syawal)</strong> — Haram berpuasa<br>
+          ❌ <strong>Idul Adha (10 Dzulhijjah)</strong> — Haram berpuasa<br>
+          ❌ <strong>Hari Tasyrik (11, 12, 13 Dzulhijjah)</strong> — Haram berpuasa<br>
+          ❌ <strong>Perempuan Haid / Nifas</strong> — Haram berpuasa, wajib qadha<br>
+          ❌ <strong>Puasa Wishal</strong> — Menyambung puasa tanpa berbuka (haram kecuali Nabi)
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" disabled>← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="goTo('sec-puasa-2')">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- =============================== PUASA 2 =============================== -->
+<div id="sec-puasa-2" class="section">
+  <div class="chap-hero blue-hero">
+    <span class="ch-arabic" style="color:#87CEEB;">وَأَن تَصُومُوا خَيْرٌ لَّكُمْ إِن كُنتُمْ تَعْلَمُونَ</span>
+    <span class="ch-sub" style="color:rgba(135,206,235,0.6);">QS. Al-Baqarah: 184</span>
+    <h1>Syarat & Rukun <em>Puasa</em></h1>
+    <p>Bab 2 dari 4 — Syarat, Rukun & Sunnah Puasa</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 2 · Rukun Puasa</div>
+      <h2>Rukun Puasa</h2>
+      <p>Hal yang wajib ada agar puasa sah</p>
+    </div>
+
+    <div class="pillars reveal">
+      <div class="pillar">
+        <div class="num">١</div>
+        <h4>Niat</h4>
+        <p>Berniat puasa karena Allah SWT dalam hati. Niat Ramadhan dilakukan setiap malam sebelum fajar.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">٢</div>
+        <h4>Menahan Diri</h4>
+        <p>Menahan diri dari makan, minum, dan pembatal puasa sejak fajar hingga maghrib.</p>
+      </div>
+    </div>
+
+    <div class="sec-hdr reveal" style="margin-top:32px;">
+      <div class="sec-badge">Syarat Wajib</div>
+      <h2>Syarat Wajib Puasa</h2>
+    </div>
+
+    <div class="list-item reveal"><div class="bullet bo">1</div><div class="text"><strong>Islam</strong><span>Puasa hanya diwajibkan bagi orang yang beragama Islam</span></div></div>
+    <div class="list-item reveal"><div class="bullet bo">2</div><div class="text"><strong>Baligh (Dewasa)</strong><span>Laki-laki ±15 tahun atau sudah mimpi basah; Perempuan sudah haid. Anak-anak dianjurkan latihan tapi belum wajib.</span></div></div>
+    <div class="list-item reveal"><div class="bullet bo">3</div><div class="text"><strong>Berakal Sehat</strong><span>Orang yang gila atau tidak sadar tidak diwajibkan berpuasa</span></div></div>
+    <div class="list-item reveal"><div class="bullet bo">4</div><div class="text"><strong>Mampu (Tidak Sakit Parah)</strong><span>Yang sakit keras boleh tidak berpuasa dan mengqadha atau membayar fidyah</span></div></div>
+    <div class="list-item reveal"><div class="bullet bo">5</div><div class="text"><strong>Mukim (Tidak dalam Perjalanan Jauh)</strong><span>Musafir (orang yang bepergian jauh ±82 km) boleh tidak berpuasa dan wajib mengqadha</span></div></div>
+    <div class="list-item reveal"><div class="bullet bo">6</div><div class="text"><strong>Suci dari Haid & Nifas</strong><span>Perempuan yang haid atau nifas tidak boleh berpuasa dan wajib mengqadha</span></div></div>
+
+    <div class="sec-hdr reveal" style="margin-top:32px;">
+      <div class="sec-badge">Sunnah Puasa</div>
+      <h2>Hal yang Dianjurkan saat Puasa</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="card reveal">
+        <span class="card-icon">🌅</span>
+        <h3>Makan Sahur</h3>
+        <p>"Bersahurlah kalian, karena dalam sahur itu terdapat barokah." (HR. Bukhari & Muslim). Sahur sebaiknya dilakukan mendekati waktu imsak.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon">🌇</span>
+        <h3>Menyegerakan Berbuka</h3>
+        <p>"Manusia senantiasa dalam kebaikan selama mereka menyegerakan berbuka." (HR. Bukhari). Buka dengan kurma atau air, lalu shalat Maghrib.</p>
+      </div>
+      <div class="card gold-b reveal">
+        <span class="card-icon">📖</span>
+        <h3>Perbanyak Tilawah</h3>
+        <p>Ramadhan adalah bulan Al-Qur'an. Dianjurkan mengkhatamkan Al-Qur'an minimal sekali, terutama di malam hari.</p>
+      </div>
+      <div class="card gold-b reveal">
+        <span class="card-icon">🤐</span>
+        <h3>Jaga Lisan & Perbuatan</h3>
+        <p>"Jika seseorang mencacimu atau mengajakmu berkelahi, katakanlah: Aku sedang berpuasa." (HR. Bukhari). Puasa bukan hanya menahan lapar.</p>
+      </div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-puasa-1')">← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="goTo('sec-puasa-3')">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- =============================== PUASA 3 =============================== -->
+<div id="sec-puasa-3" class="section">
+  <div class="chap-hero blue-hero">
+    <span class="ch-arabic" style="color:#87CEEB;">مَنْ أَفْطَرَ فِي رَمَضَانَ مُتَعَمِّدًا</span>
+    <span class="ch-sub" style="color:rgba(135,206,235,0.6);">Hadits tentang pembatal puasa</span>
+    <h1>Pembatal <em>Puasa</em></h1>
+    <p>Bab 3 dari 4 — Hal-hal yang Membatalkan Puasa</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 3 · Pembatal Puasa</div>
+      <h2>Apa Saja yang Membatalkan Puasa?</h2>
+      <p>Penting untuk diketahui agar puasa kita tetap sah.</p>
+    </div>
+
+    <div class="list-item reveal"><div class="bullet br">🍽️</div><div class="text"><strong>Makan & Minum dengan Sengaja</strong><span>Jika karena lupa → puasa tetap sah (lanjutkan). Jika disengaja → puasa batal, wajib qadha. Bahkan sebagian ulama mewajibkan kafarat.</span></div></div>
+    <div class="list-item reveal"><div class="bullet br">🚬</div><div class="text"><strong>Merokok</strong><span>Asap rokok yang dihirup masuk ke dalam tubuh secara sengaja, sehingga membatalkan puasa.</span></div></div>
+    <div class="list-item reveal"><div class="bullet br">🤢</div><div class="text"><strong>Muntah dengan Sengaja</strong><span>Muntah tidak sengaja → puasa tetap sah. Muntah sengaja → puasa batal. "Barangsiapa muntah tanpa disengaja maka tidak wajib qadha." (HR. Abu Dawud)</span></div></div>
+    <div class="list-item reveal"><div class="bullet br">🩸</div><div class="text"><strong>Haid & Nifas (Perempuan)</strong><span>Jika datang haid atau nifas meski saat menjelang maghrib, puasa hari itu batal dan wajib diqadha setelah Ramadhan.</span></div></div>
+    <div class="list-item reveal"><div class="bullet br">😵</div><div class="text"><strong>Hilang Akal (Pingsan/Gila)</strong><span>Jika pingsan sepanjang hari → puasa batal. Jika hanya sebentar kemudian sadar → ada perbedaan pendapat, umumnya puasa tetap sah.</span></div></div>
+    <div class="list-item reveal"><div class="bullet br">💉</div><div class="text"><strong>Infus / Suntik Nutrisi</strong><span>Infus yang mengandung gizi/nutrisi (seperti glukosa) membatalkan puasa karena masuk ke dalam tubuh layaknya makanan.</span></div></div>
+    <div class="list-item reveal"><div class="bullet br">🌃</div><div class="text"><strong>Keluar Mani dengan Sengaja</strong><span>Mimpi basah tidak membatalkan puasa. Namun mengeluarkan mani dengan sengaja membatalkan puasa dan wajib mandi junub.</span></div></div>
+
+    <div class="card gold-b reveal" style="margin-top:24px;">
+      <span class="card-icon">💡</span>
+      <h3>Yang TIDAK Membatalkan Puasa</h3>
+      <p>
+        ✅ Makan/minum karena lupa &nbsp;|&nbsp; ✅ Berkumur & istinsyaq (menghirup air ke hidung) tidak berlebihan<br>
+        ✅ Menelan ludah sendiri &nbsp;|&nbsp; ✅ Mencicipi masakan (tidak ditelan) &nbsp;|&nbsp; ✅ Suntikan obat (bukan nutrisi)<br>
+        ✅ Memakai parfum/minyak wangi &nbsp;|&nbsp; ✅ Mimpi basah &nbsp;|&nbsp; ✅ Bersiwak (gosok gigi)
+      </p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-puasa-2')">← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="goTo('sec-puasa-4')">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- =============================== PUASA 4 =============================== -->
+<div id="sec-puasa-4" class="section">
+  <div class="chap-hero blue-hero">
+    <span class="ch-arabic" style="color:#87CEEB;">إِنَّمَا يُوَفَّى الصَّابِرُونَ أَجْرَهُم بِغَيْرِ حِسَابٍ</span>
+    <span class="ch-sub" style="color:rgba(135,206,235,0.6);">QS. Az-Zumar: 10</span>
+    <h1>Hikmah <em>Puasa</em></h1>
+    <p>Bab 4 dari 4 — Manfaat & Hikmah Puasa</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Bab 4 · Hikmah Puasa</div>
+      <h2>Mengapa Puasa Sangat Berharga?</h2>
+    </div>
+
+    <div class="def-box dark-blue reveal">
+      <span class="arabic" style="color:#87CEEB;">كُلُّ عَمَلِ ابْنِ آدَمَ يُضَاعَفُ... إِلَّا الصَّوْمَ فَإِنَّهُ لِي وَأَنَا أَجْزِي بِهِ</span>
+      <div class="translate">HR. Bukhari & Muslim (Hadits Qudsi)</div>
+      <p>"Setiap amal manusia dilipatgandakan... kecuali puasa, sesungguhnya puasa itu untuk-Ku dan Aku sendiri yang akan membalasnya." — Hadits Qudsi ini menunjukkan betapa agungnya nilai ibadah puasa di sisi Allah SWT.</p>
+    </div>
+
+    <div class="pillars reveal">
+      <div class="pillar"><div class="num">🕌</div><h4>Meningkatkan Takwa</h4><p>Tujuan utama: bertakwa kepada Allah (QS. Al-Baqarah: 183)</p></div>
+      <div class="pillar"><div class="num">🧘</div><h4>Melatih Sabar</h4><p>Menahan nafsu = latihan kesabaran jiwa yang paling nyata</p></div>
+      <div class="pillar"><div class="num">❤️</div><h4>Empati Sosial</h4><p>Merasakan lapar menumbuhkan rasa peduli pada fakir miskin</p></div>
+      <div class="pillar"><div class="num">💪</div><h4>Kesehatan</h4><p>Autofagi: sel tubuh memperbaiki diri saat berpuasa (terbukti ilmiah)</p></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card reveal">
+        <span class="card-icon">🔥</span>
+        <h3>Membakar Dosa</h3>
+        <p>"Barangsiapa berpuasa Ramadhan dengan iman dan mengharap pahala, maka diampuni dosa-dosanya yang telah lalu." (HR. Bukhari). Puasa adalah kesempatan taubat terbesar.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon">🚪</span>
+        <h3>Pintu Surga Ar-Rayyan</h3>
+        <p>"Sesungguhnya di surga ada sebuah pintu bernama Ar-Rayyan. Pada hari kiamat orang-orang yang berpuasa masuk melaluinya." (HR. Bukhari). Betapa agung ganjaran puasa!</p>
+      </div>
+      <div class="card gold-b reveal">
+        <span class="card-icon">🌙</span>
+        <h3>Malam Lailatul Qadar</h3>
+        <p>Di bulan Ramadhan terdapat malam Lailatul Qadar yang lebih baik dari 1000 bulan (QS. Al-Qadr: 3). Ini adalah salah satu anugerah terbesar Ramadhan yang tiada duanya.</p>
+      </div>
+      <div class="card gold-b reveal">
+        <span class="card-icon">🎉</span>
+        <h3>Dua Kebahagiaan</h3>
+        <p>"Orang yang berpuasa memiliki dua kegembiraan: ketika berbuka dan ketika bertemu Rabbnya." (HR. Bukhari). Puasa adalah investasi kebahagiaan dunia dan akhirat.</p>
+      </div>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-puasa-3')">← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" disabled title="Ini halaman terakhir bab ini">Halaman Terakhir ✓</button>
+  </div>
+</div>
+
+<!-- =============================== KISAH 1 =============================== -->
+<div id="sec-kisah-1" class="section">
+  <div class="chap-hero teal-hero">
+    <span class="ch-arabic">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</span>
+    <span class="ch-sub">QS. Al-'Alaq: 1</span>
+    <h1>Kisah <em>Islami</em></h1>
+    <p>Kisah 1 dari 2 — Bilal dan Godaan Makanan Haram</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Kisah 1</div>
+      <h2>Bilal dan Godaan Makanan Haram</h2>
+      <p>Sebuah kisah tentang keteguhan hati seorang Muslim muda.</p>
+    </div>
+
+    <div class="story-card reveal">
+      <div class="story-tag">📖 Kisah Inspiratif</div>
+      <h3>🌟 Bilal yang Teguh</h3>
+      <p>Pada suatu hari yang panas di sebuah desa kecil, hiduplah seorang anak bernama <strong>Bilal</strong>, siswa kelas 6 yang rajin mengaji. Bilal dikenal sebagai anak yang jujur dan selalu berhati-hati dalam memilih makanan.</p>
+      <p>Suatu sore, teman-temannya mengajaknya ke warung pinggir jalan. Di sana tersedia berbagai makanan lezat. Namun ada satu yang menarik perhatian — sate dengan bumbu harum yang menggoda. "Ayo Bil, cobain! Enak banget!" kata temannya.</p>
+      <p>Bilal penasaran. Ia bertanya kepada si penjual, "Pak, ini sate apa?" Penjual itu menjawab asal, "Ya daging lah, Nak." Tapi Bilal tidak puas. Ia bertanya lagi, "Disembelihnya pakai bismillah tidak, Pak? Halalnya dari mana?"</p>
+      <p>Penjual itu tampak bingung dan tidak bisa menjawab dengan jelas. Teman-teman Bilal malah menertawainya, "Lebay banget sih, Bil! Makan aja!"</p>
+      <p>Bilal tersenyum tenang. Ia ingat perkataan gurunya: <em>"Seorang Muslim makan untuk beribadah, bukan sekadar memuaskan nafsu. Makanlah yang halal dan thayyib."</em></p>
+      <p>Bilal pun memilih makanan lain yang jelas kehalalannya. Perutnya memang tidak terisi sate itu, tapi hatinya terasa lega dan tenang — karena ia tahu Allah ridha dengan pilihannya.</p>
+      <div class="story-moral">💚 Pelajaran: Kehati-hatian dalam memilih makanan halal adalah tanda keimanan yang kuat. Lebih baik menahan diri dari yang syubhat (meragukan) daripada menyesal kemudian.</div>
+    </div>
+
+    <div class="card reveal">
+      <span class="card-icon">💬</span>
+      <h3>Hadits Terkait</h3>
+      <p>Rasulullah ﷺ bersabda: <em>"Yang halal itu jelas dan yang haram itu jelas, di antara keduanya ada perkara yang syubhat (meragukan). Barangsiapa yang menghindari syubhat, maka ia telah menjaga agama dan kehormatannya."</em><br><br><strong>(HR. Bukhari & Muslim)</strong></p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" disabled>← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="goTo('sec-kisah-2')">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- =============================== KISAH 2 =============================== -->
+<div id="sec-kisah-2" class="section">
+  <div class="chap-hero teal-hero">
+    <span class="ch-arabic">الصِّيَامُ جُنَّةٌ</span>
+    <span class="ch-sub">"Puasa adalah perisai" — HR. Bukhari</span>
+    <h1>Kisah <em>Islami</em></h1>
+    <p>Kisah 2 dari 2 — Aisyah dan Puasa Pertamanya</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Kisah 2</div>
+      <h2>Aisyah dan Puasa Pertamanya</h2>
+      <p>Kisah tentang semangat seorang anak dalam menjalankan ibadah puasa.</p>
+    </div>
+
+    <div class="story-card reveal">
+      <div class="story-tag">📖 Kisah Inspiratif</div>
+      <h3>🌙 Tekad Aisyah Kecil</h3>
+      <p>Aisyah baru saja menginjak kelas 6. Ramadhan tahun ini adalah <strong>puasa pertamanya yang penuh</strong> — dulu ia selalu buka di tengah hari karena tidak kuat.</p>
+      <p>Hari pertama Ramadhan. Saat semua teman-temannya makan bekal di kelas, Aisyah duduk tenang sambil membaca buku. Perutnya memang keroncongan, tapi ia bertekad: <em>"Aku harus kuat!"</em></p>
+      <p>Hari ketiga, Aisyah mulai pusing. Ibunya menawarkan untuk buka lebih awal. Tapi Aisyah menggeleng, "Bu, kata Ustadzah, puasa itu perisai. Aisyah mau punya perisai yang kuat!"</p>
+      <p>Hari ke-10, Aisyah sudah terbiasa. Ia malah menjadi yang pertama bangun sahur, membangunkan ayah dan ibunya. Ia juga mulai rajin shalat tarawih dan membaca Al-Qur'an setelah berbuka.</p>
+      <p>Di penghujung Ramadhan, saat keluarganya bertanya apa yang paling berkesan, Aisyah menjawab dengan mata berbinar: <strong>"Aisyah ngerasa lebih dekat sama Allah, Bu. Kayak Allah liatin Aisyah terus."</strong></p>
+      <p>Ibunya memeluk Aisyah erat. Air mata bahagia mengalir. Itulah buah puasa yang sesungguhnya — bukan sekadar menahan lapar, tapi <strong>menemukan Allah lebih dekat dari sebelumnya.</strong></p>
+      <div class="story-moral">💙 Pelajaran: Puasa mengajarkan kesabaran, kedisiplinan, dan yang terpenting — mendekatkan kita kepada Allah SWT. Rasakan keindahannya, bukan hanya beratnya.</div>
+    </div>
+
+    <div class="def-box reveal">
+      <span class="arabic">مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ</span>
+      <div class="translate">HR. Bukhari & Muslim</div>
+      <p>"Barangsiapa berpuasa Ramadhan dengan penuh keimanan dan mengharap pahala dari Allah, maka diampuni dosa-dosanya yang telah lalu."</p>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-kisah-1')">← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" disabled title="Ini halaman terakhir bab ini">Halaman Terakhir ✓</button>
+  </div>
+</div>
+
+<!-- =============================== GLOSARIUM =============================== -->
+<div id="sec-glosarium" class="section">
+  <div class="chap-hero purple-hero">
+    <span class="ch-arabic" style="color:#DDA0DD;">قُلْ هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ</span>
+    <span class="ch-sub" style="color:rgba(221,160,221,0.6);">QS. Az-Zumar: 9</span>
+    <h1><em>Glosarium</em> Islami</h1>
+    <p>Kumpulan istilah Arab penting beserta artinya</p>
+  </div>
+  <div class="content">
+    <div class="sec-hdr reveal">
+      <div class="sec-badge">Glosarium · Flashcard</div>
+      <h2>Klik Kartu untuk Melihat Arti!</h2>
+      <p>Klik setiap kartu untuk membaliknya dan melihat penjelasan istilah Arab tersebut.</p>
+    </div>
+
+    <div class="fc-grid" id="fc-grid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" disabled>← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" disabled title="Ini halaman terakhir bab ini">Halaman Terakhir ✓</button>
+  </div>
+</div>
+
+<!-- =============================== MINIGAME =============================== -->
+<div id="sec-minigame" class="section">
+  <div class="chap-hero" style="background:linear-gradient(135deg,#1A1A0A,#4A4A10,#2A2A0A); padding:56px 24px 64px; text-align:center; position:relative; overflow:hidden;">
+    <div class="chap-particles" id="particles-mg"></div>
+    <span class="ch-arabic" style="color:#F0D080;">لُعْبَة</span>
+    <span class="ch-sub" style="color:rgba(240,208,128,0.6);">Bermain sambil belajar</span>
+    <h1>Mini Game <em>Halal & Haram</em></h1>
+    <p>Drag & drop — masukkan makanan ke kolom yang benar!</p>
+  </div>
+  <div class="mg-wrap">
+    <div class="mg-instructions">
+      🖱️ <strong style="color:white;">Seret (drag)</strong> setiap makanan ke kolom <span style="color:#2DB370;font-weight:800;">HALAL</span> atau <span style="color:#E74C3C;font-weight:800;">HARAM</span> yang sesuai.<br>
+      Klik <strong style="color:var(--gold);">Cek Jawaban</strong> setelah semua makanan sudah ditempatkan.
+    </div>
+
+    <div class="mg-food-pool" id="mg-pool"></div>
+
+    <div class="mg-drop-zones">
+      <div class="mg-drop-zone halal-zone" id="zone-halal"
+           ondragover="mgDragOver(event)" ondrop="mgDrop(event,'halal')" ondragleave="mgDragLeave(event)">
+        <div class="mg-zone-title">✅ HALAL</div>
+        <div class="mg-zone-items" id="items-halal"></div>
+      </div>
+      <div class="mg-drop-zone haram-zone" id="zone-haram"
+           ondragover="mgDragOver(event)" ondrop="mgDrop(event,'haram')" ondragleave="mgDragLeave(event)">
+        <div class="mg-zone-title">❌ HARAM</div>
+        <div class="mg-zone-items" id="items-haram"></div>
+      </div>
+    </div>
+
+    <button class="mg-check-btn" onclick="mgCheck()">✔️ Cek Jawaban</button>
+    <div class="mg-result-msg" id="mg-result"></div>
+    <button class="mg-reset-btn" id="mg-reset-btn" onclick="mgReset()">🔄 Main Lagi</button>
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" disabled>← Sebelumnya</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" disabled>Halaman Terakhir ✓</button>
+  </div>
+</div>
+
+<!-- =============================== QUIZ =============================== -->
+<div id="sec-quiz" class="section">
+  <div class="chap-hero purple-hero">
+    <span class="ch-arabic" style="color:#DDA0DD;">اِقْرَأْ وَرَبُّكَ الْأَكْرَمُ</span>
+    <span class="ch-sub" style="color:rgba(221,160,221,0.6);">QS. Al-'Alaq: 3</span>
+    <h1>Latihan <em>Soal</em></h1>
+    <p>Uji pemahamanmu & kumpulkan badge!</p>
+  </div>
+  <div class="quiz-wrap" id="quiz-wrap">
+    <!-- Filled by JS -->
+  </div>
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="goTo('sec-glosarium')">← Glosarium</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" onclick="slideGoTo('sec-catatan','right')">Catatan ✏️ →</button>
+  </div>
+</div>
+
+<!-- =============================== CATATAN PRIBADI =============================== -->
+<div id="sec-catatan" class="section">
+  <div class="chap-hero" style="background:linear-gradient(135deg,#1A0A2E,#2E1A4A,#1A0A2E);padding:56px 24px 64px;text-align:center;position:relative;overflow:hidden;">
+    <div class="chap-particles" id="particles-catatan"></div>
+    <span class="ch-arabic" style="color:#C9A0DC;">اُكْتُبِ الْعِلْمَ</span>
+    <span class="ch-sub" style="color:rgba(201,160,220,0.6);">"Ikatlah ilmu dengan tulisan"</span>
+    <h1>Catatan <em>Pribadi</em></h1>
+    <p>Tulis catatanmu sendiri — tersimpan otomatis di browser</p>
+  </div>
+
+  <div class="catatan-wrap">
+    <div class="catatan-toolbar">
+      <button class="ct-btn" onclick="catatanNew()">➕ Catatan Baru</button>
+      <div class="ct-search-wrap">
+        <input type="text" id="ct-search" placeholder="🔍 Cari catatan..." oninput="catatanSearch()" />
+      </div>
+      <span class="ct-count" id="ct-count">0 catatan</span>
+    </div>
+
+    <!-- Editor -->
+    <div class="catatan-editor" id="ct-editor" style="display:none;">
+      <input type="text" id="ct-title-input" placeholder="Judul catatan..." class="ct-title-input" />
+      <div class="ct-tags-row">
+        <span class="ct-tag-label">Tag:</span>
+        <label class="ct-tag"><input type="radio" name="ct-tag" value="umum" checked> 📌 Umum</label>
+        <label class="ct-tag"><input type="radio" name="ct-tag" value="halal"> ⚖️ Halal & Haram</label>
+        <label class="ct-tag"><input type="radio" name="ct-tag" value="puasa"> 🌙 Puasa</label>
+        <label class="ct-tag"><input type="radio" name="ct-tag" value="glosarium"> 📚 Glosarium</label>
+      </div>
+      <textarea id="ct-body-input" placeholder="Tulis catatanmu di sini..." class="ct-body-input"></textarea>
+      <div class="ct-editor-actions">
+        <button class="ct-btn primary" onclick="catatanSave()">💾 Simpan</button>
+        <button class="ct-btn danger" id="ct-delete-btn" onclick="catatanDelete()" style="display:none;">🗑️ Hapus</button>
+        <button class="ct-btn" onclick="catatanCancelEdit()">✕ Batal</button>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div id="ct-list" class="catatan-list">
+      <!-- filled by JS -->
+    </div>
+    <div id="ct-empty" class="catatan-empty">
+      ✏️ Belum ada catatan.<br>
+      <span>Klik <strong>Catatan Baru</strong> untuk mulai menulis!</span>
+    </div>
+  </div>
+
+  <div class="page-nav">
+    <button class="pnav-btn" onclick="slideGoTo('sec-quiz','left')">← Kuis</button>
+    <button class="pnav-btn home-btn" onclick="goHome()">🏠 Beranda</button>
+    <button class="pnav-btn" disabled>Halaman Terakhir ✓</button>
+  </div>
+</div>
+
+</div><!-- /main-wrap -->
+
+<footer>
+  <span class="fa">جَزَاكَ اللَّهُ خَيْرًا</span>
+  Semoga ilmu ini bermanfaat dan menjadi amal jariyah • PAI Kelas 6 SD
+</footer>
+
+<script>
+/* ============================= STARS ============================= */
+const canvas = document.getElementById('stars-canvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = document.body.scrollHeight;
+}
+
+function initStars() {
+  resizeCanvas();
+  stars = [];
+  const count = Math.floor((canvas.width * canvas.height) / 5000);
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      speed: Math.random() * 0.008 + 0.002,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const t = Date.now() / 1000;
+  stars.forEach(s => {
+    const alpha = 0.25 + 0.5 * Math.abs(Math.sin(t * s.speed * 10 + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,240,180,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+
+window.addEventListener('resize', initStars);
+initStars();
+drawStars();
+
+/* ============================= CHAPTER PARTICLES ============================= */
+const PARTICLE_SETS = {
+  'particles-hh-1': ['⚖️','✅','❌','🌿','🍃'],
+  'particles-puasa-1': ['🌙','⭐','✨','🌟','💫'],
+  'particles-mg': ['🍗','🐟','🥩','🍎','🥕'],
+  'particles-catatan': ['✏️','📝','📖','💡','⭐'],
+};
+
+function spawnParticles(containerId, emojis) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const el = document.createElement('div');
+    el.className = 'chap-particle';
+    el.textContent = emojis[i % emojis.length];
+    el.style.left = (Math.random() * 90 + 5) + '%';
+    el.style.top = (Math.random() * 60) + '%';
+    el.style.fontSize = (0.7 + Math.random() * 0.8) + 'rem';
+    el.style.animationDuration = (3 + Math.random() * 4) + 's';
+    el.style.animationDelay = (Math.random() * 3) + 's';
+    container.appendChild(el);
+  }
+}
+
+Object.entries(PARTICLE_SETS).forEach(([id, emojis]) => spawnParticles(id, emojis));
+
+/* ============================= POINTS & BADGES ============================= */
+let totalPoints = 0;
+let earnedBadges = [];
+
+const BADGES = [
+  { id:'explorer',  icon:'🌟', name:'Penjelajah',    desc:'Membuka website',        pts: 10  },
+  { id:'halal1',    icon:'⚖️', name:'Pelajar Halal', desc:'Membaca Halal & Haram',  pts: 25  },
+  { id:'puasa1',    icon:'🌙', name:'Pelajar Puasa', desc:'Membaca bab Puasa',      pts: 30  },
+  { id:'kisah',     icon:'📖', name:'Pencinta Kisah',desc:'Membaca Kisah Islami',   pts: 20  },
+  { id:'glosarium', icon:'📚', name:'Ahli Bahasa',   desc:'Membaca Glosarium',      pts: 20  },
+  { id:'gamer',     icon:'🎮', name:'Game Master',   desc:'Bermain Mini Game',      pts: 25  },
+  { id:'quiz50',    icon:'🥉', name:'Pemula Quiz',   desc:'Skor kuis ≥ 50%',        pts: 30  },
+  { id:'quiz75',    icon:'🥈', name:'Bintang Quiz',  desc:'Skor kuis ≥ 75%',        pts: 50  },
+  { id:'quiz100',   icon:'🏆', name:'Juara Kuis',    desc:'Skor kuis 100%',         pts: 100 },
+  { id:'allread',   icon:'🎓', name:'Murid Teladan', desc:'Baca semua bab',         pts: 80  },
+];
+
+const visitedSections = new Set();
+
+function addPoints(pts) {
+  totalPoints += pts;
+  document.getElementById('pts-display').textContent = totalPoints;
+  const pct = Math.min((totalPoints / 400) * 100, 100);
+  document.getElementById('pts-bar').style.width = pct + '%';
+}
+
+function awardBadge(badgeId) {
+  if (earnedBadges.includes(badgeId)) return;
+  const badge = BADGES.find(b => b.id === badgeId);
+  if (!badge) return;
+  earnedBadges.push(badgeId);
+  const row = document.getElementById('pb-badges-row');
+  const span = document.createElement('span');
+  span.title = badge.name;
+  span.textContent = badge.icon;
+  row.appendChild(span);
+  document.getElementById('bp-icon').textContent = badge.icon;
+  document.getElementById('bp-name').textContent  = badge.name;
+  document.getElementById('bp-desc').textContent  = badge.desc;
+  const popup = document.getElementById('badge-popup');
+  popup.style.display = 'block';
+  popup.style.animation = 'none';
+  popup.offsetWidth;
+  popup.style.animation = 'popIn 0.4s cubic-bezier(.17,.67,.35,1.3)';
+  addPoints(badge.pts);
+  setTimeout(() => { popup.style.display = 'none'; }, 3500);
+}
+
+/* ============================= NAVIGATION WITH SLIDE ============================= */
+const READ_MAP = {
+  'sec-hh-1':'halal1','sec-hh-2':'halal1','sec-hh-3':'halal1',
+  'sec-puasa-1':'puasa1','sec-puasa-2':'puasa1','sec-puasa-3':'puasa1','sec-puasa-4':'puasa1',
+  'sec-kisah-1':'kisah','sec-kisah-2':'kisah',
+  'sec-glosarium':'glosarium','sec-minigame':'gamer'
+};
+
+const ALL_CONTENT_SECS = ['sec-hh-1','sec-hh-2','sec-hh-3','sec-puasa-1','sec-puasa-2','sec-puasa-3','sec-puasa-4','sec-kisah-1','sec-kisah-2','sec-glosarium'];
+
+let currentSection = 'sec-home';
+
+function slideGoTo(id, dir) {
+  if (id === currentSection) return;
+  const current = document.getElementById(currentSection);
+  const target  = document.getElementById(id);
+  if (!target) return;
+
+  const inClass  = dir === 'right' ? 'slide-in-right' : 'slide-in-left';
+  const outClass = dir === 'right' ? 'slide-out-left' : 'slide-out-right';
+
+  current.style.animation = 'none';
+  current.offsetWidth;
+  current.style.animation = '';
+  current.classList.add(outClass);
+
+  setTimeout(() => {
+    current.classList.remove('active', outClass);
+    target.classList.add('active', inClass);
+    currentSection = id;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      target.classList.remove(inClass);
+      checkReveal();
+      updateLearningPath();
+    }, 400);
+  }, 260);
+
+  if (!visitedSections.has(id)) {
+    visitedSections.add(id);
+    addPoints(5);
+  }
+  const badgeId = READ_MAP[id];
+  if (badgeId) setTimeout(() => awardBadge(badgeId), 300);
+  if (ALL_CONTENT_SECS.every(s => visitedSections.has(s))) {
+    setTimeout(() => awardBadge('allread'), 1000);
+  }
+}
+
+function goTo(id) { slideGoTo(id, 'right'); }
+
+function goHome() {
+  slideGoTo('sec-home', 'left');
+  setTimeout(updateLearningPath, 500);
+}
+
+/* ============================= LEARNING PATH ============================= */
+function updateLearningPath() {
+  const allSteps = ['sec-hh-1','sec-hh-2','sec-hh-3','sec-puasa-1','sec-puasa-2','sec-puasa-3','sec-puasa-4','sec-kisah-1','sec-kisah-2','sec-minigame','sec-glosarium','sec-quiz'];
+  let doneCount = 0;
+  allSteps.forEach(id => {
+    const el = document.getElementById('lp-' + id);
+    if (!el) return;
+    el.classList.remove('done','active-now');
+    if (visitedSections.has(id)) {
+      el.classList.add('done');
+      el.querySelector('.lp-step-dot').textContent = '✓';
+      doneCount++;
+    }
+    if (id === currentSection) el.classList.add('active-now');
+  });
+  const total = allSteps.length;
+  const pct   = Math.round((doneCount / total) * 100);
+  const summary = document.getElementById('lp-summary');
+  if (summary) {
+    summary.innerHTML = doneCount === total
+      ? '🎓 <strong>Semua halaman selesai! Kamu luar biasa!</strong>'
+      : `Progres: <strong>${doneCount}/${total} halaman</strong> (${pct}%) — Terus semangat! 💪`;
+  }
+}
+
+/* ============================= ACCORDION ============================= */
+function toggleAcc(el) { el.classList.toggle('open'); }
+
+/* ============================= REVEAL ============================= */
+function checkReveal() {
+  document.querySelectorAll('.reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 50) el.classList.add('visible');
+  });
+}
+window.addEventListener('scroll', checkReveal);
+
+/* ============================= FLASHCARDS ============================= */
+const GLOSSARY = [
+  {ar:'حَلَال',  lat:'Halal',          title:'Halal',           desc:'Diperbolehkan syariat Islam untuk dikonsumsi atau dilakukan.'},
+  {ar:'حَرَام',  lat:'Haram',          title:'Haram',           desc:'Dilarang syariat Islam. Pelakunya berdosa jika melakukannya.'},
+  {ar:'مَكْرُوه',lat:'Makruh',         title:'Makruh',          desc:'Dibenci secara syariat namun tidak haram. Lebih baik ditinggalkan.'},
+  {ar:'شُبْهَة', lat:'Syubhat',        title:'Syubhat',         desc:'Meragukan antara halal dan haram. Lebih aman dihindari.'},
+  {ar:'الصِّيَام',lat:'Ash-Shiyam',    title:'Puasa',           desc:'Menahan diri dari makan, minum & pembatal puasa dari fajar hingga maghrib.'},
+  {ar:'نِيَّة',  lat:'Niyyah',         title:'Niat',            desc:'Tekad dalam hati untuk beribadah. Rukun dari setiap ibadah.'},
+  {ar:'سَحُور',  lat:'Sahur',          title:'Sahur',           desc:'Makan sebelum fajar untuk bekal puasa. Hukumnya sunnah & penuh berkah.'},
+  {ar:'إِفْطَار',lat:'Ifthar',         title:'Buka Puasa',      desc:'Mengakhiri puasa saat Maghrib. Sunnah segera dengan kurma atau air.'},
+  {ar:'قَضَاء',  lat:'Qadha',          title:'Qadha',           desc:'Mengganti puasa yang ditinggalkan karena udzur yang dibenarkan syariat.'},
+  {ar:'فِدْيَة', lat:'Fidyah',         title:'Fidyah',          desc:'Memberi makan fakir miskin bagi yang tidak mampu puasa/mengqadha.'},
+  {ar:'كَفَّارَة',lat:'Kafarat',        title:'Kafarat',         desc:'Denda puasa disengaja: puasa 2 bulan atau beri makan 60 orang miskin.'},
+  {ar:'خَمْر',   lat:'Khamr',          title:'Khamr',           desc:'Semua minuman memabukkan — haram (QS. Al-Maidah: 90).'},
+  {ar:'مَيْتَة', lat:'Maitah',         title:'Bangkai',         desc:'Hewan mati tanpa disembelih syar\'i — haram, kecuali ikan & belalang.'},
+  {ar:'طَيِّب',  lat:'Thayyib',        title:'Thayyib',         desc:'Baik, bersih & bergizi. Makanan ideal: halal sekaligus thayyib.'},
+  {ar:'تَقْوَى', lat:'Taqwa',          title:'Takwa',           desc:'Kesadaran akan pengawasan Allah sehingga patuh perintah & jauhi larangan.'},
+  {ar:'لَيْلَةُ الْقَدْر',lat:'Lailatul Qadar',title:'Lailatul Qadar',desc:'Malam mulia di Ramadhan lebih baik dari 1000 bulan (QS. Al-Qadr: 3).'},
+  {ar:'إِسْرَاف',lat:'Israf',          title:'Israf',           desc:'Berlebihan dalam konsumsi — dilarang Islam (QS. Al-A\'raf: 31).'},
+  {ar:'ذَبِيحَة',lat:'Dzabihah',       title:'Sembelihan Halal',desc:'Disembelih syar\'i: bismillah, pisau tajam, putus urat nadi.'},
+];
+
+function buildFlashcards() {
+  const grid = document.getElementById('fc-grid');
+  if (!grid) return;
+  grid.innerHTML = GLOSSARY.map((g,i) => `
+    <div class="fc-card" onclick="this.classList.toggle('flipped')">
+      <div class="fc-inner">
+        <div class="fc-front">
+          <div class="fc-arabic">${g.ar}</div>
+          <div class="fc-hint">Klik untuk lihat arti ▶</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-back-title">${g.title}</div>
+          <div class="fc-back-latin">${g.lat}</div>
+          <div class="fc-back-desc">${g.desc}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+buildFlashcards();
+
+/* ============================= MINIGAME ============================= */
+const MG_ITEMS = [
+  {label:'🐄 Daging Sapi (disembelih)',answer:'halal'},
+  {label:'🐟 Ikan Laut',             answer:'halal'},
+  {label:'🐷 Daging Babi',           answer:'haram'},
+  {label:'🥛 Susu Sapi',             answer:'halal'},
+  {label:'🍺 Minuman Alkohol',        answer:'haram'},
+  {label:'🥚 Telur Ayam',            answer:'halal'},
+  {label:'💀 Bangkai Hewan',         answer:'haram'},
+  {label:'🍯 Madu Lebah',            answer:'halal'},
+  {label:'🩸 Darah Segar',           answer:'haram'},
+  {label:'🦁 Daging Singa',          answer:'haram'},
+  {label:'🐑 Daging Kambing',        answer:'halal'},
+  {label:'🥦 Sayuran',               answer:'halal'},
+];
+
+let mgDragging = null;
+let mgPlacements = {};
+
+function mgReset() {
+  mgPlacements = {};
+  const pool = document.getElementById('mg-pool');
+  pool.innerHTML = '';
+  document.getElementById('items-halal').innerHTML = '';
+  document.getElementById('items-haram').innerHTML = '';
+  document.getElementById('mg-result').textContent = '';
+  document.getElementById('mg-reset-btn').style.display = 'none';
+
+  const shuffled = [...MG_ITEMS].sort(() => Math.random() - 0.5);
+  shuffled.forEach((item, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'mg-food-chip';
+    chip.textContent = item.label;
+    chip.draggable = true;
+    chip.dataset.id = i;
+    chip.dataset.answer = item.answer;
+    chip.addEventListener('dragstart', e => {
+      mgDragging = chip;
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    // Touch support
+    chip.addEventListener('touchstart', mgTouchStart, {passive:true});
+    chip.addEventListener('touchmove',  mgTouchMove,  {passive:false});
+    chip.addEventListener('touchend',   mgTouchEnd,   {passive:true});
+    pool.appendChild(chip);
+  });
+}
+
+// Touch drag
+let touchChip = null, touchClone = null;
+function mgTouchStart(e) {
+  touchChip = e.currentTarget;
+  const rect = touchChip.getBoundingClientRect();
+  touchClone = touchChip.cloneNode(true);
+  touchClone.style.cssText = `position:fixed;z-index:9999;opacity:0.85;pointer-events:none;width:${rect.width}px;top:${rect.top}px;left:${rect.left}px;`;
+  document.body.appendChild(touchClone);
+}
+function mgTouchMove(e) {
+  if (!touchClone) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  touchClone.style.top  = (t.clientY - 20) + 'px';
+  touchClone.style.left = (t.clientX - 60) + 'px';
+}
+function mgTouchEnd(e) {
+  if (!touchClone || !touchChip) return;
+  const t = e.changedTouches[0];
+  touchClone.remove(); touchClone = null;
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  const zone = el ? el.closest('.mg-drop-zone') : null;
+  if (zone) {
+    const zoneId = zone.id === 'zone-halal' ? 'halal' : 'haram';
+    mgPlaceItem(touchChip, zoneId);
+  }
+  touchChip = null;
+}
+
+function mgDragOver(e)  { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function mgDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function mgDrop(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (mgDragging) mgPlaceItem(mgDragging, zone);
+}
+
+function mgPlaceItem(chip, zone) {
+  chip.classList.add('placed');
+  mgPlacements[chip.dataset.id] = { label: chip.textContent, answer: chip.dataset.answer, placed: zone };
+  const container = document.getElementById('items-' + zone);
+  const item = document.createElement('div');
+  item.className = 'mg-zone-item pending';
+  item.textContent = chip.textContent;
+  item.dataset.id  = chip.dataset.id;
+  item.onclick = () => mgRemoveItem(item, chip);
+  container.appendChild(item);
+}
+
+function mgRemoveItem(item, chip) {
+  delete mgPlacements[chip.dataset.id];
+  chip.classList.remove('placed');
+  item.remove();
+}
+
+function mgCheck() {
+  const placed = Object.values(mgPlacements);
+  if (placed.length < MG_ITEMS.length) {
+    document.getElementById('mg-result').innerHTML = '⚠️ Tempatkan semua makanan dulu ya!';
+    return;
+  }
+
+  let correct = 0;
+  ['halal','haram'].forEach(zone => {
+    document.querySelectorAll(`#items-${zone} .mg-zone-item`).forEach(item => {
+      const data = mgPlacements[item.dataset.id];
+      if (data.answer === zone) {
+        item.classList.replace('pending','correct');
+        correct++;
+      } else {
+        item.classList.replace('pending','wrong');
+      }
+    });
+  });
+
+  const total = MG_ITEMS.length;
+  const pct   = Math.round((correct / total) * 100);
+  const resultEl = document.getElementById('mg-result');
+
+  if (pct === 100) {
+    resultEl.innerHTML = '🏆 Sempurna! Semua benar! Masya Allah kamu hebat!';
+    awardBadge('gamer');
+    addPoints(20);
+  } else if (pct >= 70) {
+    resultEl.innerHTML = `✅ ${correct}/${total} benar (${pct}%) — Bagus! Coba lagi untuk sempurna.`;
+    awardBadge('gamer');
+    addPoints(10);
+  } else {
+    resultEl.innerHTML = `❌ ${correct}/${total} benar (${pct}%) — Pelajari lagi ya, bisa pasti bisa!`;
+    addPoints(5);
+  }
+
+  document.getElementById('mg-reset-btn').style.display = 'block';
+}
+
+mgReset();
+
+/* ============================= QUIZ ============================= */
+const QUESTIONS = [
+  {q:"Arti kata 'Halal' dalam bahasa Arab adalah…",opts:["Dilarang","Diperbolehkan / Diizinkan","Makruh","Wajib"],ans:1,exp:"Halal (حَلَال) berarti diperbolehkan atau diizinkan oleh syariat Islam."},
+  {q:"Daging manakah yang jelas diharamkan dalam Al-Qur'an?",opts:["Daging sapi","Daging ayam","Daging babi","Daging kambing"],ans:2,exp:"Daging babi diharamkan dalam QS. Al-Baqarah: 173 dan QS. Al-Maidah: 3."},
+  {q:"Bangkai yang diharamkan adalah…",opts:["Hewan disembelih bismillah","Hewan mati tanpa disembelih syar'i","Semua ikan laut","Hewan yang masih hidup"],ans:1,exp:"Bangkai = hewan mati bukan karena disembelih. Ikan dikecualikan."},
+  {q:"Puasa Ramadhan termasuk Rukun Islam yang ke…",opts:["2 (Kedua)","3 (Ketiga)","4 (Keempat)","5 (Kelima)"],ans:2,exp:"Rukun Islam: Syahadat, Shalat, Zakat, Puasa, Haji. Puasa urutan ke-4."},
+  {q:"Puasa dimulai dari waktu…",opts:["Setelah shalat Isya","Terbit fajar / masuk waktu Subuh","Tengah malam","Setelah makan sahur"],ans:1,exp:"Puasa dimulai sejak fajar shadiq (Subuh) hingga terbenam matahari (Maghrib)."},
+  {q:"Yang TIDAK membatalkan puasa adalah…",opts:["Makan dengan sengaja","Merokok","Makan karena lupa","Muntah dengan sengaja"],ans:2,exp:"Nabi ﷺ: 'Barangsiapa lupa dan makan/minum, hendaklah lanjutkan puasanya.' (HR. Bukhari)"},
+  {q:"Hikmah utama puasa menurut QS. Al-Baqarah: 183 adalah…",opts:["Menurunkan berat badan","Mendapat pujian","Agar bertakwa kepada Allah","Menambah kekayaan"],ans:2,exp:"Akhir ayat 183: 'la'allakum tattaquun' = agar bertakwa. Itu tujuan utama puasa."},
+  {q:"Hari yang HARAM untuk berpuasa adalah…",opts:["Senin dan Kamis","Ayyamul Bidh (13-14-15 Hijriah)","Puasa Syawal 6 hari","Idul Fitri, Idul Adha, dan Hari Tasyrik"],ans:3,exp:"Puasa pada Idul Fitri, Idul Adha, dan 3 hari Tasyrik (11-12-13 Dzulhijjah) hukumnya haram."},
+  {q:"Arti kata 'Thayyib' dalam istilah makanan adalah…",opts:["Mahal dan mewah","Baik, bersih, dan bergizi","Dimasak dengan api","Berwarna cerah"],ans:1,exp:"Thayyib (طَيِّب) artinya baik, bersih, bergizi. Makanan ideal: halal sekaligus thayyib."},
+  {q:"Apa yang dimaksud 'Khamr' dalam Islam?",opts:["Minuman manis","Minuman yang memabukkan","Minuman dingin","Minuman dari kurma"],ans:1,exp:"Khamr = semua yang memabukkan, haram (QS. Al-Maidah: 90). Termasuk bir, wine, alkohol."},
+];
+
+let qIndex = 0, qScore = 0, qAnswered = false;
+let qResults = [];
+
+function buildQuiz() {
+  qIndex = 0; qScore = 0; qAnswered = false; qResults = [];
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const wrap = document.getElementById('quiz-wrap');
+  if (qIndex >= QUESTIONS.length) { showResult(); return; }
+  const q = QUESTIONS[qIndex];
+  const pct = (qIndex / QUESTIONS.length) * 100;
+  wrap.innerHTML = `
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="quiz-counter">Soal ${qIndex+1} dari ${QUESTIONS.length}</div>
+    <div class="quiz-card">
+      <div class="q-num">Soal ${qIndex+1}</div>
+      <h3>${q.q}</h3>
+      <div class="quiz-options" id="qopts">
+        ${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectAnswer(this,${i})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="qfb"></div>
+      <button class="quiz-next-btn" id="qnext" onclick="nextQuestion()">
+        ${qIndex+1 < QUESTIONS.length ? 'Soal Berikutnya →' : 'Lihat Rapor 📋'}
+      </button>
+    </div>`;
+  qAnswered = false;
+}
+
+function selectAnswer(btn, idx) {
+  if (qAnswered) return;
+  qAnswered = true;
+  const q = QUESTIONS[qIndex];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach(o => o.disabled = true);
+  const fb = document.getElementById('qfb');
+  fb.style.display = 'block';
+  const isCorrect = idx === q.ans;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback correct';
+    fb.innerHTML = '✅ Benar! ' + q.exp;
+    qScore++;
+  } else {
+    btn.classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback wrong';
+    fb.innerHTML = '❌ Kurang tepat. ' + q.exp;
+  }
+  qResults.push({ q: q.q, chosen: q.opts[idx], correct: q.opts[q.ans], ok: isCorrect });
+  document.getElementById('qnext').style.display = 'block';
+}
+
+function nextQuestion() { qIndex++; renderQuestion(); }
+
+function showResult() {
+  const total = QUESTIONS.length;
+  const pct   = Math.round((qScore / total) * 100);
+  let grade, gradeClass, icon, msg, badgeId = null;
+
+  if (pct === 100) { grade='A'; gradeClass='grade-a'; icon='🏆'; msg='Sempurna! Masya Allah, kamu luar biasa!'; badgeId='quiz100'; }
+  else if (pct >= 75) { grade='B'; gradeClass='grade-b'; icon='🥈'; msg='Bagus sekali! Tinggal sedikit lagi untuk sempurna.'; badgeId='quiz75'; }
+  else if (pct >= 50) { grade='C'; gradeClass='grade-c'; icon='🥉'; msg='Lumayan! Pelajari lagi bagian yang masih kurang.'; badgeId='quiz50'; }
+  else { grade='D'; gradeClass='grade-d'; icon='📚'; msg='Jangan menyerah! Baca materi dulu lalu coba lagi.'; }
+
+  if (badgeId) setTimeout(() => awardBadge(badgeId), 800);
+  awardBadge('gamer');
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  const detailRows = qResults.map((r,i) => `
+    <div class="rapor-row">
+      <span class="rl">${i+1}. ${r.q.substring(0,40)}...</span>
+      <span class="rv" style="color:${r.ok?'#1A7A4A':'#C0392B'}">${r.ok?'✅ Benar':'❌ Salah'}</span>
+    </div>`).join('');
+
+  const badgesEarned = badgeId ? [BADGES.find(b=>b.id===badgeId)] : [];
+
+  document.getElementById('quiz-wrap').innerHTML = `
+    <div style="text-align:center;margin-bottom:20px;">
+      <span style="font-size:3rem">${icon}</span>
+      <div style="font-size:1.4rem;font-weight:900;color:white;margin:8px 0">Kuis Selesai!</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.9rem">${msg}</div>
+    </div>
+
+    <div class="rapor-card" id="rapor-card">
+      <div class="rapor-header">
+        <div class="rapor-school">📋 Rapor Nilai — PAI Kelas 6 SD</div>
+        <div class="rapor-title-text">Latihan Soal</div>
+        <div class="rapor-subtitle">Halal, Haram & Ibadah Puasa</div>
+      </div>
+
+      <div class="rapor-score-big">
+        <div class="rapor-score-num">${qScore}/${total}</div>
+        <div class="rapor-score-label">${pct}% Jawaban Benar</div>
+      </div>
+
+      <div class="rapor-grade">
+        <div class="rapor-grade-val ${gradeClass}" style="display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;margin:0 auto 6px;">${grade}</div>
+        <div class="rapor-grade-label">Nilai Huruf</div>
+      </div>
+
+      <div class="rapor-rows">
+        <div class="rapor-row"><span class="rl">Tanggal</span><span class="rv">${dateStr}</span></div>
+        <div class="rapor-row"><span class="rl">Jumlah Soal</span><span class="rv">${total} soal</span></div>
+        <div class="rapor-row"><span class="rl">Jawaban Benar</span><span class="rv" style="color:#1A7A4A">${qScore} soal</span></div>
+        <div class="rapor-row"><span class="rl">Jawaban Salah</span><span class="rv" style="color:#C0392B">${total-qScore} soal</span></div>
+        <div class="rapor-row"><span class="rl">Skor Akhir</span><span class="rv" style="font-size:1.1rem">${pct}</span></div>
+        <div class="rapor-row"><span class="rl">Total Poin Terkumpul</span><span class="rv" style="color:var(--gold)">⭐ ${totalPoints}</span></div>
+      </div>
+
+      ${badgesEarned.length ? `
+      <div style="text-align:center;margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:#aaa;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Badge Diraih</div>
+        ${badgesEarned.map(b=>`<span title="${b.name}" style="font-size:1.6rem">${b.icon}</span>`).join(' ')}
+      </div>` : ''}
+
+      <details style="margin-bottom:12px;">
+        <summary style="cursor:pointer;font-size:0.85rem;font-weight:700;color:var(--emerald-mid);padding:8px 0;">📊 Detail per Soal</summary>
+        <div style="margin-top:8px;">${detailRows}</div>
+      </details>
+
+      <div class="rapor-footer-text">Teruslah belajar dengan penuh semangat! 🌟</div>
+    </div>
+
+    <div class="rapor-actions">
+      <button class="rapor-btn primary" onclick="printRapor()">📸 Simpan / Screenshot</button>
+      <button class="rapor-btn secondary" onclick="buildQuiz()">🔄 Coba Lagi</button>
+    </div>
+  `;
+}
+
+function printRapor() {
+  const card = document.getElementById('rapor-card');
+  if (!card) return;
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Rapor PAI Kelas 6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Nunito',sans-serif;background:#f5f0e0;display:flex;justify-content:center;padding:40px 20px;}
+    .rapor-card{background:linear-gradient(135deg,#FDF6E3,#FFF8E7);border-radius:24px;padding:36px 32px;max-width:500px;width:100%;border:3px solid #C9A84C;box-shadow:0 12px 40px rgba(0,0,0,0.15);}
+    .rapor-header{text-align:center;border-bottom:2px solid rgba(201,168,76,0.3);padding-bottom:16px;margin-bottom:20px;}
+    .rapor-school{font-size:0.75rem;font-weight:800;letter-spacing:1.5px;color:#0F4D2E;text-transform:uppercase;margin-bottom:4px;}
+    .rapor-title-text{font-size:1.3rem;font-weight:900;color:#0A2816;margin-bottom:2px;}
+    .rapor-subtitle{font-size:0.8rem;color:#777;}
+    .rapor-score-big{text-align:center;margin:16px 0;}
+    .rapor-score-num{font-size:4rem;font-weight:900;color:#1A7A4A;line-height:1;}
+    .rapor-score-label{font-size:0.82rem;color:#888;margin-top:4px;}
+    .rapor-grade{text-align:center;margin:16px 0;}
+    .rapor-grade-val{display:flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;font-size:1.6rem;font-weight:900;margin:0 auto 6px;}
+    .grade-a{background:#D4EFDF;color:#1A7A4A;} .grade-b{background:#D6EAF8;color:#1A5276;}
+    .grade-c{background:#FEF9E7;color:#B7950B;} .grade-d{background:#FADADD;color:#A93226;}
+    .rapor-grade-label{font-size:0.82rem;color:#666;}
+    .rapor-rows{margin-bottom:16px;}
+    .rapor-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.1);font-size:0.87rem;}
+    .rl{color:#555;font-weight:600;} .rv{font-weight:800;color:#0A2816;}
+    .rapor-footer-text{text-align:center;font-size:0.78rem;color:#aaa;font-style:italic;}
+    @media print{body{background:white;padding:0;}@page{margin:20px;}}
+  </style></head><body>${card.outerHTML}
+  <script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+/* ============================= CATATAN PRIBADI ============================= */
+const CT_KEY = 'pai_catatan_v1';
+let catatanData = [];
+let catatanEditId = null;
+
+const TAG_LABELS = {
+  umum: '📌 Umum', halal: '⚖️ Halal & Haram',
+  puasa: '🌙 Puasa', glosarium: '📚 Glosarium'
+};
+
+function catatanLoad() {
+  try {
+    const raw = localStorage.getItem(CT_KEY);
+    catatanData = raw ? JSON.parse(raw) : [];
+  } catch(e) { catatanData = []; }
+  catatanRender();
+}
+
+function catatanSaveStorage() {
+  try { localStorage.setItem(CT_KEY, JSON.stringify(catatanData)); } catch(e) {}
+}
+
+function catatanRender(filter = '') {
+  const list  = document.getElementById('ct-list');
+  const empty = document.getElementById('ct-empty');
+  const count = document.getElementById('ct-count');
+  if (!list) return;
+
+  const q = filter.toLowerCase();
+  const filtered = catatanData.filter(c =>
+    c.title.toLowerCase().includes(q) || c.body.toLowerCase().includes(q)
+  );
+
+  count.textContent = catatanData.length + ' catatan';
+
+  if (filtered.length === 0) {
+    list.innerHTML  = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  list.innerHTML = filtered.slice().reverse().map(c => `
+    <div class="catatan-item" onclick="catatanEdit('${c.id}')">
+      <div class="catatan-item-header">
+        <span class="ci-tag-badge">${TAG_LABELS[c.tag] || '📌 Umum'}</span>
+        <span class="ci-date">${c.date}</span>
+      </div>
+      <div class="ci-title">${escHtml(c.title) || '(Tanpa Judul)'}</div>
+      <div class="ci-preview">${escHtml(c.body)}</div>
+    </div>
+  `).join('');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function catatanNew() {
+  catatanEditId = null;
+  document.getElementById('ct-title-input').value = '';
+  document.getElementById('ct-body-input').value  = '';
+  document.querySelector('input[name="ct-tag"][value="umum"]').checked = true;
+  document.getElementById('ct-delete-btn').style.display = 'none';
+  document.getElementById('ct-editor').style.display = 'block';
+  document.getElementById('ct-title-input').focus();
+}
+
+function catatanEdit(id) {
+  const c = catatanData.find(x => x.id === id);
+  if (!c) return;
+  catatanEditId = id;
+  document.getElementById('ct-title-input').value = c.title;
+  document.getElementById('ct-body-input').value  = c.body;
+  const tagEl = document.querySelector(`input[name="ct-tag"][value="${c.tag}"]`);
+  if (tagEl) tagEl.checked = true;
+  document.getElementById('ct-delete-btn').style.display = 'inline-flex';
+  document.getElementById('ct-editor').style.display = 'block';
+  document.getElementById('ct-title-input').focus();
+}
+
+function catatanSave() {
+  const title = document.getElementById('ct-title-input').value.trim();
+  const body  = document.getElementById('ct-body-input').value.trim();
+  const tag   = document.querySelector('input[name="ct-tag"]:checked')?.value || 'umum';
+
+  if (!title && !body) {
+    document.getElementById('ct-title-input').style.borderColor = '#E74C3C';
+    setTimeout(() => document.getElementById('ct-title-input').style.borderColor = '', 1500);
+    return;
+  }
+
+  const now  = new Date();
+  const date = now.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'});
+
+  if (catatanEditId) {
+    const idx = catatanData.findIndex(c => c.id === catatanEditId);
+    if (idx >= 0) { catatanData[idx] = { ...catatanData[idx], title, body, tag, date }; }
+  } else {
+    catatanData.push({ id: 'ct_' + Date.now(), title, body, tag, date });
+    addPoints(5);
+  }
+
+  catatanSaveStorage();
+  catatanCancelEdit();
+  catatanRender(document.getElementById('ct-search').value);
+}
+
+function catatanDelete() {
+  if (!catatanEditId) return;
+  if (!confirm('Hapus catatan ini?')) return;
+  catatanData = catatanData.filter(c => c.id !== catatanEditId);
+  catatanSaveStorage();
+  catatanCancelEdit();
+  catatanRender(document.getElementById('ct-search').value);
+}
+
+function catatanCancelEdit() {
+  catatanEditId = null;
+  document.getElementById('ct-editor').style.display = 'none';
+}
+
+function catatanSearch() {
+  catatanRender(document.getElementById('ct-search').value);
+}
+
+catatanLoad();
+
+/* ============================= WIRE UP WINDOW ALIASES ============================= */
+window._goHome         = goHome;
+window._goTo           = goTo;
+window._slideGoTo      = slideGoTo;
+window._toggleAcc      = toggleAcc;
+window._mgDragOver     = mgDragOver;
+window._mgDragLeave    = mgDragLeave;
+window._mgDrop         = mgDrop;
+window._mgCheck        = mgCheck;
+window._mgReset        = mgReset;
+window._selectAnswer   = selectAnswer;
+window._nextQuestion   = nextQuestion;
+window._buildQuiz      = buildQuiz;
+window._printRapor     = printRapor;
+
+/* ============================= INIT ============================= */
+mgReset();
+buildFlashcards();
+buildQuiz();
+setTimeout(checkReveal, 300);
+updateLearningPath();
+addPoints(10);
+awardBadge('explorer');
+</script>
+</body>
+</html>
